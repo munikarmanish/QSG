@@ -11,7 +11,7 @@ Software packages
 
 You need to have following packages installed:
 
-- Java development kit >= 1.7
+- Java development kit >= 8
 - Gradle
 - MySQL server and client
 
@@ -37,7 +37,7 @@ The database schema is stored in ``db.sql`` file. To initialize the database jus
 Usage
 -----
 
-    **Note:** The repo is not *usable* at the moment. ;)
+    **Note:** The repo is not quite *usable* at the moment. ;)
 
 To run local server::
 
