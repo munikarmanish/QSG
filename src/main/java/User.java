@@ -58,11 +58,26 @@ public class User implements Timestamped {
     this.username = username;
   }
 
+  public String getPasswordHash() {
+    return this.passwordHash;
+  }
+
+  public void setPasswordHash(String passwordHash) {
+    this.passwordHash = passwordHash;
+  }
+
   public String getName() {
     return this.name;
   }
 
   public void setName(String name) {
     this.name = name;
+  }
+
+  // methods
+
+  public boolean checkPassword(String password) {
+    String newHash = Utils.bytesToBase64(Utils.sha256(password));
+    return newHash.equals(this.passwordHash);
   }
 }
