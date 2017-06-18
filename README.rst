@@ -50,7 +50,7 @@ To run the test cases::
 Developers
 ----------
 
-- **M**anish Munikar
-- **A**akash Shrestha
-- **R**ojina Deuja
-- **S**ushil Shakya
+- **M**\ anish Munikar
+- **A**\ akash Shrestha
+- **R**\ ojina Deuja
+- **S**\ ushil Shakya
