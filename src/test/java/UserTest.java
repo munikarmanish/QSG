@@ -10,22 +10,26 @@ public class UserTest {
 
     @Test
     public void check_password() {
-        User u = new User();
         String password = "Some random password";
-        u.setPasswordHash(Utils.bytesToBase64(Utils.sha256(password)));
+        User u = new User("test@example.com", "test", password, "test");
         assert(u.checkPassword(password));
     }
 
     @Test
     public void get_all_users() {
-        User u = new User();
-        u.setEmail("test@example.com");
-        u.setUsername("test");
-        u.setPasswordHash(Utils.sha256Base64("test"));
-        u.setName("Test");
+        User u = new User("test@example.com", "test", "test", "test");
         u.save();
         assertEquals(1, User.all().size());
         assertTrue(User.all().contains(u));
+    }
+
+    @Test
+    public void delete_user_from_db() {
+        User u = new User("test@example.com", "test", "test", "test");
+        u.save();
+        assertEquals(1, User.all().size());
+        u.delete();
+        assertEquals(0, User.all().size());
     }
 
 }

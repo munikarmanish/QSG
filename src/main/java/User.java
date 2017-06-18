@@ -19,6 +19,13 @@ public class User implements Timestamped {
 
     // constructors
 
+    public User(String email, String username, String password, String name) {
+        this.setEmail(email);
+        this.setUsername(username);
+        this.setPassword(password);
+        this.setName(name);
+    }
+
     // getters and setters
 
     public int getId() {
@@ -63,7 +70,11 @@ public class User implements Timestamped {
     }
 
     public void setUsername(String username) {
-        this.username = username;
+        if (username.matches("[A-Za-z0-9_.-]+")) {
+            this.username = username;
+        } else {
+            throw new IllegalArgumentException("Invalid username");
+        }
     }
 
     public String getPasswordHash() {
@@ -71,7 +82,17 @@ public class User implements Timestamped {
     }
 
     public void setPasswordHash(String passwordHash) {
+        if (!passwordHash.matches("^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$")) {
+            throw new IllegalArgumentException("Invalid password hash, regex fail");
+        }
+        if (passwordHash.length() != 44) {
+            throw new IllegalArgumentException("Invalid password hash, not 44 length");
+        }
         this.passwordHash = passwordHash;
+    }
+
+    public void setPassword(String password) {
+        this.setPasswordHash(Utils.sha256Base64(password));
     }
 
     public String getName() {
@@ -112,6 +133,16 @@ public class User implements Timestamped {
                 .executeUpdate()
                 .getKey(int.class);
             return this;
+        }
+    }
+
+    public void delete() {
+        try (Connection con = DB.sql2o.open()) {
+            String sql = "DELETE FROM users WHERE id=:id";
+            con.createQuery(sql)
+                .addParameter("id", this.id)
+                .executeUpdate();
+            this.id = 0;
         }
     }
 
