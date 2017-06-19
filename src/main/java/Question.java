@@ -84,7 +84,8 @@ public class Question extends Timestamped {
             return false;
         }
         Question q = (Question) obj;
-        return this.userId == q.getUserId() &&
+        return this.id == q.getId() &&
+            this.userId == q.getUserId() &&
             this.categoryId == q.getCategoryId() &&
             this.text.equals(q.getText()) &&
             this.difficulty == q.getDifficulty();

@@ -54,10 +54,8 @@ public class Category extends Timestamped {
     public void delete() {
         try (Connection con = DB.sql2o.open()) {
             String sql = "DELETE FROM categories WHERE id=:id";
-            con.createQuery(sql)
-                .bind(this)
-                .executeUpdate();
-            this.id = 0;
+            con.createQuery(sql).bind(this).executeUpdate();
+            this.setId(0);
         }
     }
 

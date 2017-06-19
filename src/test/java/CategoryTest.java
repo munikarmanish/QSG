@@ -9,7 +9,7 @@ public class CategoryTest {
 
 
     @Test
-    public void get_all_users() {
+    public void get_all_categories() {
         Category c = new Category("Math");
         c.save();
         assertEquals(1, Category.all().size());
