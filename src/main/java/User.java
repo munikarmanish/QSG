@@ -7,7 +7,7 @@ import org.sql2o.*;
 public class User extends Timestamped {
 
     // variables
-    
+
     private String email;
     private String username;
     private String passwordHash;
@@ -19,6 +19,13 @@ public class User extends Timestamped {
         this.setEmail(email);
         this.setUsername(username);
         this.setPassword(password);
+        this.setName(name);
+    }
+
+    public User(String name) {
+        this.setEmail(name + "@example.com");
+        this.setUsername(name);
+        this.setPassword(name);
         this.setName(name);
     }
 
