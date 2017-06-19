@@ -76,7 +76,7 @@ CREATE TABLE sets (
     -- fields
     id INTEGER  AUTO_INCREMENT  NOT NULL,
     userId INTEGER,
-    total_marks SMALLINT  NOT NULL,
+    totalMarks SMALLINT  NOT NULL,
     -- timestamps
     createdAt timestamp  NOT NULL  DEFAULT current_timestamp,
     updatedAt timestamp  NOT NULL  DEFAULT current_timestamp  ON UPDATE current_timestamp,

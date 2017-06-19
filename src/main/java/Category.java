@@ -47,6 +47,9 @@ public class Category extends Timestamped {
                 .bind(this)
                 .executeUpdate()
                 .getKey(int.class);
+            Category c = Category.findById(this.id);
+            this.setCreatedAt(c.getCreatedAt());
+            this.setUpdatedAt(c.getUpdatedAt());
             return this;
         }
     }

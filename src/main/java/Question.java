@@ -101,6 +101,9 @@ public class Question extends Timestamped {
                 .bind(this)
                 .executeUpdate()
                 .getKey(int.class);
+            Question q = Question.findById(this.id);
+            this.setCreatedAt(q.getCreatedAt());
+            this.setUpdatedAt(q.getUpdatedAt());
             return this;
         }
     }
