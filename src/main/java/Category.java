@@ -69,4 +69,13 @@ public class Category extends Timestamped {
             return con.createQuery(sql).executeAndFetch(Category.class);
         }
     }
+
+    public static Category findById(int id) {
+        try (Connection con = DB.sql2o.open()) {
+            String sql = "SELECT * FROM categories WHERE id=:id";
+            return con.createQuery(sql)
+                .addParameter("id", id)
+                .executeAndFetchFirst(Category.class);
+        }
+    }
 }

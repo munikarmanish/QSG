@@ -32,4 +32,11 @@ public class UserTest {
         assertEquals(0, User.all().size());
     }
 
+    @Test
+    public void find_user_by_id() {
+        User u = new User("test").save();
+        int id = u.getId();
+        assertEquals(u, User.findById(id));
+    }
+
 }

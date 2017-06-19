@@ -133,4 +133,13 @@ public class User extends Timestamped {
             return con.createQuery(sql).executeAndFetch(User.class);
         }
     }
+
+    public static User findById(int id) {
+        try (Connection con = DB.sql2o.open()) {
+            String sql = "SELECT * FROM users WHERE id=:id";
+            return con.createQuery(sql)
+                .addParameter("id", id)
+                .executeAndFetchFirst(User.class);
+        }
+    }
 }

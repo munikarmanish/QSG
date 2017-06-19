@@ -25,4 +25,11 @@ public class CategoryTest {
         assertEquals(0, Category.all().size());
     }
 
+    @Test
+    public void find_category_by_id() {
+        Category c = new Category("test").save();
+        int id = c.getId();
+        assertEquals(c, Category.findById(id));
+    }
+
 }
