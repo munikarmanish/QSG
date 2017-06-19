@@ -20,7 +20,6 @@ public class Utils {
         return new String(Base64.getEncoder().encode(bytes));
     }
 
-
     private final static char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
 
     public static String bytesToHex(byte[] bytes) {
