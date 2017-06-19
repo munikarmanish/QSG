@@ -4,14 +4,10 @@ import java.util.List;
 import org.sql2o.*;
 
 
-public class User implements Timestamped {
+public class User extends Timestamped {
 
     // variables
-
-    private int id;
-    private Timestamp createdAt;
-    private Timestamp updatedAt;
-
+    
     private String email;
     private String username;
     private String passwordHash;
@@ -27,30 +23,6 @@ public class User implements Timestamped {
     }
 
     // getters and setters
-
-    public int getId() {
-        return this.id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public Timestamp getCreatedAt() {
-        return this.createdAt;
-    }
-
-    public void setCreatedAt(Timestamp timestamp) {
-        this.createdAt = timestamp;
-    }
-
-    public Timestamp getUpdatedAt() {
-        return this.updatedAt;
-    }
-
-    public void setUpdatedAt(Timestamp timestamp) {
-        this.updatedAt = timestamp;
-    }
 
     public String getEmail() {
         return this.email;
