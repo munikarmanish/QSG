@@ -77,6 +77,8 @@ CREATE TABLE sets (
     id INTEGER  AUTO_INCREMENT  NOT NULL,
     userId INTEGER,
     totalMarks SMALLINT  NOT NULL,
+    examTime TIMESTAMP  NOT NULL,   -- date & time of exam
+    examDuration INTEGER  NOT NULL  DEFAULT 60, -- in minutes
     -- timestamps
     createdAt timestamp  NOT NULL  DEFAULT current_timestamp,
     updatedAt timestamp  NOT NULL  DEFAULT current_timestamp  ON UPDATE current_timestamp,
