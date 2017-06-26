@@ -128,6 +128,13 @@ public class User extends Timestamped {
         }
     }
 
+    public List<Question> getQuestions() {
+        try (Connection con = DB.sql2o.open()) {
+            String sql = "SELECT * FROM questions WHERE userId=:id";
+            return con.createQuery(sql).bind(this).executeAndFetch(Question.class);
+        }
+    }
+
     // static methods
 
     public static List<User> all() {
