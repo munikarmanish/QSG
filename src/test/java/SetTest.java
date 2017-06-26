@@ -1,11 +1,16 @@
 import org.junit.*;
+import org.junit.rules.ExpectedException;
 import static org.junit.Assert.*;
+import org.sql2o.*;
 
 
 public class SetTest {
 
     @Rule
     public DatabaseRule database = new DatabaseRule();
+
+    @Rule
+    public final ExpectedException exception = ExpectedException.none();
 
 
     @Test
@@ -43,6 +48,33 @@ public class SetTest {
         Set s = new Set(u, 100).save();
         int id = s.getId();
         assertEquals(s, Set.findById(id));
+    }
+
+    // relations
+
+    @Test
+    public void get_user() {
+        User u = new User("test").save();
+        Set s = new Set(u, 100).save();
+        assertEquals(u, s.getUser());
+    }
+
+    @Test
+    public void getQuestions() {
+        User u = new User("test").save();
+        Set s = new Set(u, 100).save();
+        Category c = new Category("test").save();
+        Question q1 = new Question(u, c, "Question 1", 0).save();
+        Question q2 = new Question(u, c, "Question 2", 0).save();
+        s.addQuestion(q1);
+        s.addQuestion(q2);
+        assertEquals(2, s.getQuestions().size());
+        assertTrue(s.getQuestions().contains(q1));
+        assertEquals(q1.getId(), s.getQuestions().get(0).getId());
+        assertTrue(s.getQuestions().contains(q2));
+        // make sure can't add same question twice
+        exception.expect(Sql2oException.class);
+        s.addQuestion(q1);
     }
 
 }

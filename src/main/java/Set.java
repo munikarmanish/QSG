@@ -14,7 +14,7 @@ public class Set extends Timestamped {
     private int examDuration;       // in minutes
 
     // constructors
-    
+
     public Set(int userId, int totalMarks) {
         this.setUserId(userId);
         this.setTotalMarks(totalMarks);
@@ -44,7 +44,7 @@ public class Set extends Timestamped {
     }
 
     // getters
-    
+
     public int getUserId() {
         return this.userId;
     }
@@ -101,7 +101,7 @@ public class Set extends Timestamped {
     }
 
     // database methods
-    
+
     public Set save() {
         try (Connection con = DB.sql2o.open()) {
             String sql = "INSERT INTO sets (userId, totalMarks, examTime, examDuration)"
@@ -122,8 +122,38 @@ public class Set extends Timestamped {
         }
     }
 
+    public Set addQuestion(Question q) {
+        try (Connection con = DB.sql2o.open()) {
+            String sql = "INSERT INTO sets_questions (setId, questionId)"
+                + "VALUES (:setId, :questionId)";
+            con.createQuery(sql)
+                .addParameter("setId", this.id)
+                .addParameter("questionId", q.getId())
+                .executeUpdate();
+            return this;
+        }
+    }
+
+    // relations lookup
+
+    public User getUser() {
+        try (Connection con = DB.sql2o.open()) {
+            String q = "SELECT * FROM users WHERE id=:userId";
+            return con.createQuery(q).bind(this).executeAndFetchFirst(User.class);
+        }
+    }
+
+    public List<Question> getQuestions() {
+        try (Connection con = DB.sql2o.open()) {
+            String q = "SELECT questions.id, userId, categoryId, text, difficulty, questions.createdAt, questions.updatedAt FROM questions"
+                + " INNER JOIN sets_questions ON questions.id = sets_questions.questionId"
+                + " WHERE sets_questions.setId = :id";
+            return con.createQuery(q).bind(this).executeAndFetch(Question.class);
+        }
+    }
+
     // static methods
-    
+
     public static List<Set> all() {
         try (Connection con = DB.sql2o.open()) {
             String sql = "SELECT * FROM sets";
