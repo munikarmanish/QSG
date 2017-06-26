@@ -118,6 +118,29 @@ public class Question extends Timestamped {
         }
     }
 
+    // relations lookup
+
+    public User getUser() {
+        try (Connection con = DB.sql2o.open()) {
+            String sql = "SELECT * FROM users WHERE id=:userId";
+            return con.createQuery(sql).bind(this).executeAndFetchFirst(User.class);
+        }
+    }
+
+    public Category getCategory() {
+        try (Connection con = DB.sql2o.open()) {
+            String sql = "SELECT * FROM categories WHERE id=:categoryId";
+            return con.createQuery(sql).bind(this).executeAndFetchFirst(Category.class);
+        }
+    }
+
+    public List<Answer> getAnswers() {
+        try (Connection con = DB.sql2o.open()) {
+            String sql = "SELECT * FROM answers WHERE questionId=:id";
+            return con.createQuery(sql).bind(this).executeAndFetch(Answer.class);
+        }
+    }
+
     // static methods
 
     public static List<Question> all() {

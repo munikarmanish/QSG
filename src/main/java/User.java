@@ -128,6 +128,8 @@ public class User extends Timestamped {
         }
     }
 
+    // relations lookup
+
     public List<Question> getQuestions() {
         try (Connection con = DB.sql2o.open()) {
             String sql = "SELECT * FROM questions WHERE userId=:id";

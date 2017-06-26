@@ -52,4 +52,36 @@ public class QuestionTest {
         assertEquals(q, Question.findById(id));
     }
 
+    @Test
+    public void get_user() {
+        User u = new User("test").save();
+        Category c = new Category("test").save();
+        Question q = new Question(u, c, "Math", 0).save();
+        assertEquals(u, q.getUser());
+    }
+
+    @Test
+    public void get_category() {
+        User u = new User("test").save();
+        Category c = new Category("test").save();
+        Question q = new Question(u, c, "Math", 0).save();
+        assertEquals(c, q.getCategory());
+    }
+
+    @Test
+    public void getAnswers() {
+        User u = new User("test").save();
+        Category c = new Category("test").save();
+        Question q = new Question(u, c, "Math", 0).save();
+        Answer a1 = new Answer(q, "Answer 1", true).save();
+        Answer a2 = new Answer(q, "Answer 2", false).save();
+        Answer a3 = new Answer(q, "Answer 3", false).save();
+        Answer a4 = new Answer(q, "Answer 4", false).save();
+        assertEquals(4, q.getAnswers().size());
+        assertTrue(q.getAnswers().contains(a1));
+        assertTrue(q.getAnswers().contains(a2));
+        assertTrue(q.getAnswers().contains(a3));
+        assertTrue(q.getAnswers().contains(a4));
+    }
+
 }
