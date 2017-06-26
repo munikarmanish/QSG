@@ -68,7 +68,7 @@ public class Answer extends Timestamped {
     }
 
     // database methods
-    
+
     public Answer save() {
         try (Connection con = DB.sql2o.open()) {
             String sql = "INSERT INTO answers (questionId, text, isCorrect)"
@@ -89,8 +89,17 @@ public class Answer extends Timestamped {
         }
     }
 
+    // relations lookup
+
+    public Question getQuestion() {
+        try (Connection con = DB.sql2o.open()) {
+            String sql = "SELECT * FROM questions WHERE id=:questionId";
+            return con.createQuery(sql).bind(this).executeAndFetchFirst(Question.class);
+        }
+    }
+
     // static methods
-    
+
     public static List<Answer> all() {
         try (Connection con = DB.sql2o.open()) {
             String sql = "SELECT * FROM answers";

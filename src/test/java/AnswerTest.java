@@ -39,4 +39,13 @@ public class AnswerTest {
         assertEquals(a, Answer.findById(id));
     }
 
+    @Test
+    public void get_question() {
+        User u = new User("test").save();
+        Category c = new Category("test").save();
+        Question q = new Question(u, c, "What?", 0).save();
+        Answer a = new Answer(q, "That", true).save();
+        assertEquals(q, a.getQuestion());
+    }
+
 }
