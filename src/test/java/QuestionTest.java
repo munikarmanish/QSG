@@ -84,4 +84,18 @@ public class QuestionTest {
         assertTrue(q.getAnswers().contains(a4));
     }
 
+    @Test
+    public void getSets() {
+        User u = new User("test").save();
+        Category c = new Category("test").save();
+        Set s1 = new Set(u, 100).save();
+        Set s2 = new Set(u, 200).save();
+        Question q = new Question(u, c, "Math", 0).save();
+        s1.addQuestion(q);
+        s2.addQuestion(q);
+        assertEquals(2, q.getSets().size());
+        assertTrue(q.getSets().contains(s1));
+        assertTrue(q.getSets().contains(s2));
+    }
+
 }
