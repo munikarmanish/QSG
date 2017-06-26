@@ -62,6 +62,13 @@ public class Category extends Timestamped {
         }
     }
 
+    public List<Question> getQuestions() {
+        try (Connection con = DB.sql2o.open()) {
+            String sql = "SELECT * FROM questions WHERE categoryId=:id";
+            return con.createQuery(sql).bind(this).executeAndFetch(Question.class);
+        }
+    }
+
     // static methods
 
     public static List<Category> all() {

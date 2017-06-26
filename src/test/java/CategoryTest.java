@@ -32,4 +32,16 @@ public class CategoryTest {
         assertEquals(c, Category.findById(id));
     }
 
+    @Test
+    public void get_all_questions() {
+        User u = new User("test").save();
+        Category c = new Category("test").save();
+        Question q1 = new Question(u, c, "Math", 0).save();
+        Question q2 = new Question(u, c, "Science", 0).save();
+
+        assertEquals(2, c.getQuestions().size());
+        assertTrue(c.getQuestions().contains(q1));
+        assertTrue(c.getQuestions().contains(q2));
+    }
+
 }
