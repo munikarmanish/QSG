@@ -51,4 +51,15 @@ public class UserTest {
         assertTrue(u.getQuestions().contains(q2));
     }
 
+    @Test
+    public void get_all_sets() {
+        User u = new User("test").save();
+        Set s1 = new Set(u, 100).save();
+        Set s2 = new Set(u, 200).save();
+
+        assertEquals(2, u.getSets().size());
+        assertTrue(u.getSets().contains(s1));
+        assertTrue(u.getSets().contains(s2));
+    }
+
 }

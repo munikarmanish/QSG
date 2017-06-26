@@ -135,6 +135,13 @@ public class User extends Timestamped {
         }
     }
 
+    public List<Set> getSets() {
+        try (Connection con = DB.sql2o.open()) {
+            String sql = "SELECT * FROM sets WHERE userId=:id";
+            return con.createQuery(sql).bind(this).executeAndFetch(Set.class);
+        }
+    }
+
     // static methods
 
     public static List<User> all() {
