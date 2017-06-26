@@ -9,6 +9,12 @@ public class SetTest {
 
 
     @Test
+    public void set_timestamp_from_string() {
+        User u = new User("test").save();
+        Set s = new Set(u, 100).save();
+    }
+
+    @Test
     public void get_all_sets() {
         User u = new User("test").save();
         Set s = new Set(u, 100).save();
