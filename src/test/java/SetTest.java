@@ -12,6 +12,12 @@ public class SetTest {
     public void set_timestamp_from_string() {
         User u = new User("test").save();
         Set s = new Set(u, 100).save();
+        s.setExamTime("2017-07-01 10:00:00");
+        assertEquals(2017-1900, s.getExamTime().getYear());
+        assertEquals(7-1, s.getExamTime().getMonth());
+        assertEquals(1, s.getExamTime().getDate());
+        assertEquals(10, s.getExamTime().getHours());
+        assertEquals(0, s.getExamTime().getMinutes());
     }
 
     @Test
