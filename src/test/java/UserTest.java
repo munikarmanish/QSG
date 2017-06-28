@@ -32,4 +32,34 @@ public class UserTest {
         assertEquals(0, User.all().size());
     }
 
+    @Test
+    public void find_user_by_id() {
+        User u = new User("test").save();
+        int id = u.getId();
+        assertEquals(u, User.findById(id));
+    }
+
+    @Test
+    public void get_all_questions() {
+        User u = new User("test").save();
+        Category c = new Category("test").save();
+        Question q1 = new Question(u, c, "Math", 0).save();
+        Question q2 = new Question(u, c, "Science", 0).save();
+
+        assertEquals(2, u.getQuestions().size());
+        assertTrue(u.getQuestions().contains(q1));
+        assertTrue(u.getQuestions().contains(q2));
+    }
+
+    @Test
+    public void get_all_sets() {
+        User u = new User("test").save();
+        Set s1 = new Set(u, 100).save();
+        Set s2 = new Set(u, 200).save();
+
+        assertEquals(2, u.getSets().size());
+        assertTrue(u.getSets().contains(s1));
+        assertTrue(u.getSets().contains(s2));
+    }
+
 }

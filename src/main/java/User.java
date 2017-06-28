@@ -4,13 +4,9 @@ import java.util.List;
 import org.sql2o.*;
 
 
-public class User implements Timestamped {
+public class User extends Timestamped {
 
     // variables
-
-    private int id;
-    private Timestamp createdAt;
-    private Timestamp updatedAt;
 
     private String email;
     private String username;
@@ -26,31 +22,14 @@ public class User implements Timestamped {
         this.setName(name);
     }
 
+    public User(String name) {
+        this.setEmail(name + "@example.com");
+        this.setUsername(name);
+        this.setPassword(name);
+        this.setName(name);
+    }
+
     // getters and setters
-
-    public int getId() {
-        return this.id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public Timestamp getCreatedAt() {
-        return this.createdAt;
-    }
-
-    public void setCreatedAt(Timestamp timestamp) {
-        this.createdAt = timestamp;
-    }
-
-    public Timestamp getUpdatedAt() {
-        return this.updatedAt;
-    }
-
-    public void setUpdatedAt(Timestamp timestamp) {
-        this.updatedAt = timestamp;
-    }
 
     public String getEmail() {
         return this.email;
@@ -132,6 +111,9 @@ public class User implements Timestamped {
                 .bind(this)
                 .executeUpdate()
                 .getKey(int.class);
+            User u = User.findById(this.id);
+            this.setCreatedAt(u.getCreatedAt());
+            this.setUpdatedAt(u.getUpdatedAt());
             return this;
         }
     }
@@ -146,12 +128,37 @@ public class User implements Timestamped {
         }
     }
 
+    // relations lookup
+
+    public List<Question> getQuestions() {
+        try (Connection con = DB.sql2o.open()) {
+            String sql = "SELECT * FROM questions WHERE userId=:id";
+            return con.createQuery(sql).bind(this).executeAndFetch(Question.class);
+        }
+    }
+
+    public List<Set> getSets() {
+        try (Connection con = DB.sql2o.open()) {
+            String sql = "SELECT * FROM sets WHERE userId=:id";
+            return con.createQuery(sql).bind(this).executeAndFetch(Set.class);
+        }
+    }
+
     // static methods
 
     public static List<User> all() {
         try (Connection con = DB.sql2o.open()) {
             String sql = "SELECT * FROM users";
             return con.createQuery(sql).executeAndFetch(User.class);
+        }
+    }
+
+    public static User findById(int id) {
+        try (Connection con = DB.sql2o.open()) {
+            String sql = "SELECT * FROM users WHERE id=:id";
+            return con.createQuery(sql)
+                .addParameter("id", id)
+                .executeAndFetchFirst(User.class);
         }
     }
 }
