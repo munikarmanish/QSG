@@ -98,4 +98,15 @@ public class QuestionTest {
         assertTrue(q.getSets().contains(s2));
     }
 
+
+    @Test
+    public void add_an_answer_to_question() {
+        User u = new User("test").save();
+        Category c = new Category("test").save();
+        Question q = new Question(u, c, "Math", 0).save();
+        q.addAnswer("Answer", false);
+        assertEquals("Answer", q.getAnswers().get(0).getText());
+        assertEquals(false, q.getAnswers().get(0).getIsCorrect());
+    }
+
 }

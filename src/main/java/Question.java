@@ -141,6 +141,11 @@ public class Question extends Timestamped {
         }
     }
 
+    public Question addAnswer(String text, boolean isCorrect) {
+        Answer a = new Answer(this.id, text, isCorrect).save();
+        return this;
+    }
+
     public List<Set> getSets() {
         try (Connection con = DB.sql2o.open()) {
             String q = "SELECT sets.id, sets.userId, totalMarks,"
