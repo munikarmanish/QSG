@@ -8,11 +8,46 @@ public class Set extends Timestamped {
 
     // variables
 
+    private int interviewId;
+    private int set;
+
     // constructors
+
+    public Set() {
+        // empty constructor
+    }
+
+    public Set(int interviewId, int set) {
+        this.setInterviewId(interviewId);
+        this.setSet(set);
+    }
+
+    public Set(Interview interview, int set) {
+        this.setInterviewId(interview.getId());
+        this.setSet(set);
+    }
 
     // getters
 
+    public int getInterviewId() {
+        return this.interviewId;
+    }
+
+    public int getSet() {
+        return this.set;
+    }
+
     // setters
+
+    public Set setInterviewId(int id) {
+        this.interviewId = id;
+        return this;
+    }
+
+    public Set setSet(int set) {
+        this.set = set;
+        return this;
+    }
 
     // operators
 
@@ -20,15 +55,17 @@ public class Set extends Timestamped {
     public boolean equals(Object obj) {
         if (! (obj instanceof Set)) return false;
         Set s = (Set) obj;
-        return this.id == s.getId();
+        return this.id == s.getId() &&
+            this.interviewId == s.getInterviewId() &&
+            this.set == s.getSet();
     }
 
     // database methods
 
     public Set save() {
         try (Connection con = DB.sql2o.open()) {
-            String sql = "INSERT INTO sets (userId, totalMarks, examTime, examDuration)"
-                + "VALUES (:userId, :totalMarks, :examTime, :examDuration)";
+            String sql = "INSERT INTO sets (interviewId, `set`)"
+                + " VALUES (:interviewId, :set)";
             this.id = con.createQuery(sql).bind(this).executeUpdate().getKey(int.class);
             return Set.findById(this.id);
         }
@@ -42,26 +79,26 @@ public class Set extends Timestamped {
         }
     }
 
-    public Set addQuestion(Question q) {
-        try (Connection con = DB.sql2o.open()) {
-            String sql = "INSERT INTO sets_questions (setId, questionId)"
-                + "VALUES (:setId, :questionId)";
-            con.createQuery(sql)
-                .addParameter("setId", this.id)
-                .addParameter("questionId", q.getId())
-                .executeUpdate();
-            return this;
-        }
-    }
+    // public Set addQuestion(Question q) {
+    //     try (Connection con = DB.sql2o.open()) {
+    //         String sql = "INSERT INTO sets_questions (setId, questionId)"
+    //             + "VALUES (:setId, :questionId)";
+    //         con.createQuery(sql)
+    //             .addParameter("setId", this.id)
+    //             .addParameter("questionId", q.getId())
+    //             .executeUpdate();
+    //         return this;
+    //     }
+    // }
 
     // relations lookup
 
-    public User getUser() {
-        try (Connection con = DB.sql2o.open()) {
-            String q = "SELECT * FROM users WHERE id=:userId";
-            return con.createQuery(q).bind(this).executeAndFetchFirst(User.class);
-        }
-    }
+    // public User getUser() {
+    //     try (Connection con = DB.sql2o.open()) {
+    //         String q = "SELECT * FROM users WHERE id=:userId";
+    //         return con.createQuery(q).bind(this).executeAndFetchFirst(User.class);
+    //     }
+    // }
 
     public List<Question> getQuestions() {
         try (Connection con = DB.sql2o.open()) {
