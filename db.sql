@@ -2,106 +2,125 @@
 SET FOREIGN_KEY_CHECKS = 0;
 
 -- User
-DROP TABLE IF EXISTS users CASCADE;
-CREATE TABLE users (
+DROP TABLE IF EXISTS `users` CASCADE;
+CREATE TABLE `users` (
     -- fields
-    id INTEGER  AUTO_INCREMENT  NOT NULL,
-    email VARCHAR(100)  NOT NULL,
-    username VARCHAR(100)  NOT NULL,
-    passwordHash CHAR(44)  NOT NULL,
-    name VARCHAR(100),
+    `id` INTEGER  AUTO_INCREMENT  NOT NULL,
+    `email` VARCHAR(100)  NOT NULL,
+    `username` VARCHAR(100)  NOT NULL,
+    `passwordHash` CHAR(44)  NOT NULL,
+    `name` VARCHAR(100),
     -- timestamps
-    createdAt timestamp  NOT NULL  DEFAULT current_timestamp,
-    updatedAt timestamp  NOT NULL  DEFAULT current_timestamp  ON UPDATE current_timestamp,
+    `createdAt` timestamp  NOT NULL  DEFAULT current_timestamp,
+    `updatedAt` timestamp  NOT NULL  DEFAULT current_timestamp  ON UPDATE current_timestamp,
     -- constraints
-    PRIMARY KEY (id),
-    UNIQUE KEY (email),
-    UNIQUE KEY (username)
+    PRIMARY KEY (`id`),
+    UNIQUE KEY (`email`),
+    UNIQUE KEY (`username`)
 );
 
 -- Category
-DROP TABLE IF EXISTS categories CASCADE;
-CREATE TABLE categories (
+DROP TABLE IF EXISTS `categories` CASCADE;
+CREATE TABLE `categories` (
     -- fields
-    id INTEGER  AUTO_INCREMENT  NOT NULL,
-    name VARCHAR(100)  NOT NULL,
+    `id` INTEGER  AUTO_INCREMENT  NOT NULL,
+    `name` VARCHAR(100)  NOT NULL,
     -- timestamps
-    createdAt timestamp  NOT NULL  DEFAULT current_timestamp,
-    updatedAt timestamp  NOT NULL  DEFAULT current_timestamp  ON UPDATE current_timestamp,
+    `createdAt` timestamp  NOT NULL  DEFAULT current_timestamp,
+    `updatedAt` timestamp  NOT NULL  DEFAULT current_timestamp  ON UPDATE current_timestamp,
     -- constraints
-    PRIMARY KEY (id)
+    PRIMARY KEY (`id`)
 );
 
 -- Question
-DROP TABLE IF EXISTS questions CASCADE;
-CREATE TABLE questions (
+DROP TABLE IF EXISTS `questions` CASCADE;
+CREATE TABLE `questions` (
     -- fields
-    id INTEGER  AUTO_INCREMENT  NOT NULL,
-    userId INTEGER,
-    categoryId INTEGER,
-    text VARCHAR(255)  NOT NULL,
+    `id` INTEGER  AUTO_INCREMENT  NOT NULL,
+    `userId` INTEGER,
+    `categoryId` INTEGER,
+    `text` VARCHAR(255)  NOT NULL,
     -- difficulty:
     --   0 - Easy
     --   1 - Medium
     --   2 - Hard
-    difficulty SMALLINT  NOT NULL  DEFAULT 0,
+    `difficulty` SMALLINT  NOT NULL  DEFAULT 0,
     -- timestamps
-    createdAt timestamp  NOT NULL  DEFAULT current_timestamp,
-    updatedAt timestamp  NOT NULL  DEFAULT current_timestamp  ON UPDATE current_timestamp,
+    `createdAt` timestamp  NOT NULL  DEFAULT current_timestamp,
+    `updatedAt` timestamp  NOT NULL  DEFAULT current_timestamp  ON UPDATE current_timestamp,
     -- constraints
-    PRIMARY KEY (id),
-    FOREIGN KEY (userId)  REFERENCES users(id)  ON DELETE SET NULL,
-    FOREIGN KEY (categoryId)  REFERENCES categories(id)  ON DELETE SET NULL
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (`userId`)  REFERENCES `users`(`id`)  ON DELETE SET NULL,
+    FOREIGN KEY (`categoryId`)  REFERENCES `categories`(`id`)  ON DELETE SET NULL
 );
 
 -- Answer
-DROP TABLE IF EXISTS answers CASCADE;
-CREATE TABLE answers (
+DROP TABLE IF EXISTS `answers` CASCADE;
+CREATE TABLE `answers` (
     -- fields
-    id INTEGER  AUTO_INCREMENT  NOT NULL,
-    questionId INTEGER  NOT NULL,
-    text VARCHAR(255)  NOT NULL,
-    isCorrect BOOLEAN  NOT NULL  DEFAULT FALSE,
+    `id` INTEGER  AUTO_INCREMENT  NOT NULL,
+    `questionId` INTEGER  NOT NULL,
+    `text` VARCHAR(255)  NOT NULL,
+    `isCorrect` BOOLEAN  NOT NULL  DEFAULT FALSE,
     -- timestamps
-    createdAt timestamp  NOT NULL  DEFAULT current_timestamp,
-    updatedAt timestamp  NOT NULL  DEFAULT current_timestamp  ON UPDATE current_timestamp,
+    `createdAt` timestamp  NOT NULL  DEFAULT current_timestamp,
+    `updatedAt` timestamp  NOT NULL  DEFAULT current_timestamp  ON UPDATE current_timestamp,
     -- constraints
-    PRIMARY KEY (id),
-    FOREIGN KEY (questionId)  REFERENCES questions(id)  ON DELETE CASCADE
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (`questionId`)  REFERENCES `questions`(`id`)  ON DELETE CASCADE
+);
+
+
+-- Interview
+DROP TABLE IF EXISTS `interviews` CASCADE;
+CREATE TABLE `interviews` (
+    -- fields
+    `id` INTEGER  AUTO_INCREMENT  NOT NULL,
+    `title` VARCHAR(255)  NOT NULL,
+    `time` TIMESTAMP  NOT NULL  DEFAULT current_timestamp,   -- date & time of exam
+    `duration` INTEGER  NOT NULL  DEFAULT 30, -- in minutes
+    `userId` INTEGER,
+    -- timestamps
+    `createdAt` timestamp  NOT NULL  DEFAULT current_timestamp,
+    `updatedAt` timestamp  NOT NULL  DEFAULT current_timestamp  ON UPDATE current_timestamp,
+    -- constraints
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (`userId`)  REFERENCES `users`(`id`)  ON DELETE SET NULL
 );
 
 -- Set
-DROP TABLE IF EXISTS sets CASCADE;
-CREATE TABLE sets (
+DROP TABLE IF EXISTS `sets` CASCADE;
+CREATE TABLE `sets` (
     -- fields
-    id INTEGER  AUTO_INCREMENT  NOT NULL,
-    userId INTEGER,
-    totalMarks SMALLINT  NOT NULL,
-    examTime TIMESTAMP  NOT NULL,   -- date & time of exam
-    examDuration INTEGER  NOT NULL  DEFAULT 60, -- in minutes
+    `id` INTEGER  AUTO_INCREMENT  NOT NULL,
+    `interviewId` INTEGER,
+    `set` CHAR(1)  NOT NULL,
     -- timestamps
-    createdAt timestamp  NOT NULL  DEFAULT current_timestamp,
-    updatedAt timestamp  NOT NULL  DEFAULT current_timestamp  ON UPDATE current_timestamp,
+    `createdAt` timestamp  NOT NULL  DEFAULT current_timestamp,
+    `updatedAt` timestamp  NOT NULL  DEFAULT current_timestamp  ON UPDATE current_timestamp,
     -- constraints
-    PRIMARY KEY (id),
-    FOREIGN KEY (userId) REFERENCES users(id)  ON DELETE SET NULL
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (`interviewId`) REFERENCES `interviews`(`id`)  ON DELETE SET NULL,
+    UNIQUE (`interviewId`, `set`)
 );
 
 -- Set Question many-many relation
-DROP TABLE IF EXISTS sets_questions CASCADE;
-CREATE TABLE sets_questions (
+DROP TABLE IF EXISTS `sets_questions` CASCADE;
+CREATE TABLE `sets_questions` (
     -- fields
-    id INTEGER  AUTO_INCREMENT  NOT NULL,
-    setId INTEGER  NOT NULL,
-    questionId INTEGER  NOT NULL,
+    `id` INTEGER  AUTO_INCREMENT  NOT NULL,
+    `setId` INTEGER  NOT NULL,
+    `questionId` INTEGER  NOT NULL,
+    `questionNumber` SMALLINT  NOT NULL,
+    `correctIndex` SMALLINT  NOT NULL,
     -- timestamps
-    createdAt timestamp  NOT NULL  DEFAULT current_timestamp,
-    updatedAt timestamp  NOT NULL  DEFAULT current_timestamp  ON UPDATE current_timestamp,
+    `createdAt` timestamp  NOT NULL  DEFAULT current_timestamp,
+    `updatedAt` timestamp  NOT NULL  DEFAULT current_timestamp  ON UPDATE current_timestamp,
     -- constraints
-    PRIMARY KEY (id),
-    FOREIGN KEY (setId)  REFERENCES sets(id)  ON DELETE CASCADE,
-    FOREIGN KEY (questionId)  REFERENCES questions(id)  ON DELETE CASCADE,
-    UNIQUE (setId, questionId)
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (`setId`)  REFERENCES `sets`(`id`)  ON DELETE CASCADE,
+    FOREIGN KEY (`questionId`)  REFERENCES `questions`(`id`)  ON DELETE CASCADE,
+    UNIQUE (`setId`, `questionId`)
 );
 
 -- Enable foreign key checks
