@@ -111,10 +111,7 @@ public class User extends Timestamped {
                 .bind(this)
                 .executeUpdate()
                 .getKey(int.class);
-            User u = User.findById(this.id);
-            this.setCreatedAt(u.getCreatedAt());
-            this.setUpdatedAt(u.getUpdatedAt());
-            return this;
+            return User.findById(this.id);
         }
     }
 
