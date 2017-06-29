@@ -24,22 +24,24 @@ You need to have a MySQL user ``lis`` with password ``lis`` and with access to e
 
 .. code-block:: sql
 
-    > CREATE DATABASE lis;
-    > CREATE DATABASE lis_test;
-    > CREATE USER lis IDENTIFIED BY 'lis';
-    > GRANT ALL PRIVILEGES ON `lis%`.* TO lis;
+    > CREATE DATABASE `lis` DEFAULT CHARACTER SET utf8;
+    > CREATE DATABASE `lis_test` DEFAULT CHARACTER SET utf8;
+    > CREATE USER `lis` IDENTIFIED BY `lis`;
+    > GRANT ALL PRIVILEGES ON `lis%`.* TO `lis`;
 
 The database schema is stored in ``db.sql`` file. To initialize the database just run the following command from the terminal::
 
     $ mysql --user=lis --password=lis lis < db.sql
     $ mysql --user=lis --password=lis lis_test < db.sql
 
+Or you can directly use the following shell script::
+
+    $ ./update_database.sh
+
 Usage
 -----
 
-    **Note:** The repo is not quite *usable* at the moment. ;)
-
-To run local server::
+To run local server (**NOT IMPLEMENTED YET**)::
 
     $ gradle run
 
