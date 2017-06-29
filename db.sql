@@ -94,7 +94,7 @@ CREATE TABLE `sets` (
     -- fields
     `id` INTEGER  AUTO_INCREMENT  NOT NULL,
     `interviewId` INTEGER,
-    `set` CHAR(1)  NOT NULL,
+    `set` SMALLINT  NOT NULL  DEFAULT 1,
     -- timestamps
     `createdAt` timestamp  NOT NULL  DEFAULT current_timestamp,
     `updatedAt` timestamp  NOT NULL  DEFAULT current_timestamp  ON UPDATE current_timestamp,

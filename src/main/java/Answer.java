@@ -74,10 +74,7 @@ public class Answer extends Timestamped {
             String sql = "INSERT INTO answers (questionId, text, isCorrect)"
                 + "VALUES (:questionId, :text, :isCorrect)";
             this.id = con.createQuery(sql).bind(this).executeUpdate().getKey(int.class);
-            Answer a = Answer.findById(this.id);
-            this.setCreatedAt(a.getCreatedAt());
-            this.setUpdatedAt(a.getUpdatedAt());
-            return this;
+            return Answer.findById(this.id);
         }
     }
 

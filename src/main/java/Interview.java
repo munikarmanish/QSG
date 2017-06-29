@@ -95,8 +95,7 @@ public class Interview extends Timestamped {
                 .bind(this)
                 .executeUpdate()
                 .getKey(int.class);
-            Interview c = Interview.findById(this.id);
-            return c;
+            return Interview.findById(this.id);
         }
     }
 
