@@ -79,26 +79,28 @@ public class Set extends Timestamped {
         }
     }
 
-    // public Set addQuestion(Question q) {
-    //     try (Connection con = DB.sql2o.open()) {
-    //         String sql = "INSERT INTO sets_questions (setId, questionId)"
-    //             + "VALUES (:setId, :questionId)";
-    //         con.createQuery(sql)
-    //             .addParameter("setId", this.id)
-    //             .addParameter("questionId", q.getId())
-    //             .executeUpdate();
-    //         return this;
-    //     }
-    // }
+    public Set addQuestion(Question q, int questionNumber, int correctIndex) {
+        try (Connection con = DB.sql2o.open()) {
+            String sql = "INSERT INTO sets_questions (setId, questionId, questionNumber, correctIndex)"
+                + "VALUES (:setId, :questionId, :questionNumber, :correctIndex)";
+            con.createQuery(sql)
+                .addParameter("setId", this.id)
+                .addParameter("questionId", q.getId())
+                .addParameter("questionNumber", questionNumber)
+                .addParameter("correctIndex", correctIndex)
+                .executeUpdate();
+            return this;
+        }
+    }
 
     // relations lookup
 
-    // public User getUser() {
-    //     try (Connection con = DB.sql2o.open()) {
-    //         String q = "SELECT * FROM users WHERE id=:userId";
-    //         return con.createQuery(q).bind(this).executeAndFetchFirst(User.class);
-    //     }
-    // }
+    public Interview getInterview() {
+        try (Connection con = DB.sql2o.open()) {
+            String q = "SELECT * FROM interviews WHERE id=:interviewId";
+            return con.createQuery(q).bind(this).executeAndFetchFirst(Interview.class);
+        }
+    }
 
     public List<Question> getQuestions() {
         try (Connection con = DB.sql2o.open()) {
