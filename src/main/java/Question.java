@@ -145,8 +145,8 @@ public class Question extends Timestamped {
 
     public List<Set> getSets() {
         try (Connection con = DB.sql2o.open()) {
-            String q = "SELECT sets.id, sets.userId, totalMarks,"
-                + " examTime, examDuration, sets.createdAt, sets.updatedAt"
+            String q = "SELECT sets.id, sets.interviewId, sets.set,"
+                + " sets.createdAt, sets.updatedAt"
                 + " FROM sets INNER JOIN sets_questions ON sets.id = sets_questions.setId"
                 + " WHERE sets_questions.questionId = :id";
             return con.createQuery(q).bind(this).executeAndFetch(Set.class);
