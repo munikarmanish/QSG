@@ -24,10 +24,10 @@ You need to have a MySQL user ``lis`` with password ``lis`` and with access to e
 
 .. code-block:: sql
 
-    > CREATE DATABASE `lis` DEFAULT CHARACTER SET utf8;
-    > CREATE DATABASE `lis_test` DEFAULT CHARACTER SET utf8;
-    > CREATE USER `lis` IDENTIFIED BY `lis`;
-    > GRANT ALL PRIVILEGES ON `lis%`.* TO `lis`;
+    > CREATE DATABASE lis;
+    > CREATE DATABASE lis_test;
+    > CREATE USER lis IDENTIFIED BY `lis`;
+    > GRANT ALL PRIVILEGES ON `lis%`.* TO lis;
 
 The database schema is stored in ``db.sql`` file. To initialize the database just run the following command from the terminal::
 
@@ -41,9 +41,11 @@ Or you can directly use the following shell script::
 Usage
 -----
 
-To run local server (**NOT IMPLEMENTED YET**)::
+To run local server::
 
     $ gradle run
+
+And then visit http://0.0.0.0:4567 in the browser.
 
 To run the test cases::
 
