@@ -40,6 +40,12 @@ public class UserTest {
     }
 
     @Test
+    public void find_user_by_username() {
+        User u = new User("test").save();
+        assertEquals(u, User.findByUsername("test"));
+    }
+
+    @Test
     public void get_all_questions() {
         User u = new User("test").save();
         Category c = new Category("test").save();
@@ -56,7 +62,7 @@ public class UserTest {
         User u = new User("test").save();
         Interview s1 = new Interview(u, "test").save();
         Interview s2 = new Interview(u, "test").save();
-        
+
         assertEquals(2, u.getInterviews().size());
         assertTrue(u.getInterviews().contains(s1));
         assertTrue(u.getInterviews().contains(s2));

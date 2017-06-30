@@ -158,4 +158,12 @@ public class User extends Timestamped {
                 .executeAndFetchFirst(User.class);
         }
     }
+
+    public static User findByUsername(String username) {
+        try (Connection con = DB.sql2o.open()) {
+            return con.createQuery("SELECT * FROM users WHERE username=:username")
+                .addParameter("username", username)
+                .executeAndFetchFirst(User.class);
+        }
+    }
 }
