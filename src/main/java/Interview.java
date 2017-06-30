@@ -109,6 +109,22 @@ public class Interview extends Timestamped {
 
     // relations lookup
 
+    public User getUser() {
+        try (Connection con = DB.sql2o.open()) {
+            return con.createQuery("SELECT * FROM users WHERE id=:userId")
+                .bind(this)
+                .executeAndFetchFirst(User.class);
+        }
+    }
+
+    public List<Set> getSets() {
+        try (Connection con = DB.sql2o.open()) {
+            return con.createQuery("SELECT * FROM sets WHERE interviewId=:id")
+                .bind(this)
+                .executeAndFetch(Set.class);
+        }
+    }
+
     // static methods
 
     public static List<Interview> all() {

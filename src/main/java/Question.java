@@ -96,7 +96,7 @@ public class Question extends Timestamped {
     public Question save() {
         try (Connection con = DB.sql2o.open()) {
             String sql = "INSERT INTO questions (userId, categoryId, text, difficulty)"
-                         + "VALUES (:userId, :categoryId, :text, :difficulty)";
+                         + " VALUES (:userId, :categoryId, :text, :difficulty)";
             this.id = con.createQuery(sql, true)
                 .bind(this)
                 .executeUpdate()

@@ -33,4 +33,28 @@ public class InterviewTest {
         assertEquals(c, Interview.findById(id));
     }
 
+    // relations lookup
+
+    @Test
+    public void get_user() {
+        User u = new User("test").save();
+        Interview i = new Interview(u, "test").save();
+        assertEquals(u, i.getUser());
+    }
+
+    @Test
+    public void get_sets() {
+        User u = new User("test").save();
+        Interview i = new Interview(u, "test").save();
+        Set[] sets = {
+            new Set(i, 1).save(),
+            new Set(i, 2).save(),
+            new Set(i, 3).save(),
+        };
+        assertEquals(3, i.getSets().size());
+        for (Set s : sets) {
+            assertTrue(i.getSets().contains(s));
+        }
+    }
+
 }
