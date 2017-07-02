@@ -12,6 +12,7 @@ public class App {
     {
         staticFileLocation("/public");
         String layout = "templates/layout.vtl";
+        String layout_db= "templates/layout_dashboard.vtl";
 
         // Home
         get("/", (request, response) -> {
@@ -21,17 +22,16 @@ public class App {
         }, new VelocityTemplateEngine());
         
         //Dashboard
-         // Home
-        get("/", (request, response) -> {
+        get("/admin", (request, response) -> {
             Map<String,Object> model = new HashMap<String,Object>();
             model.put("template", "templates/admin.vtl");
-            return new ModelAndView(model, layout);
+            return new ModelAndView(model, layout_db);
         }, new VelocityTemplateEngine());
 
         // Message
         get("/message", (request, response) -> {
             Map<String,Object> model = new HashMap<String,Object>();
-            model.put("template", "templates/admin.vtl");
+            model.put("template", "templates/message.vtl");
             return new ModelAndView(model, layout);
         }, new VelocityTemplateEngine());
 
@@ -39,7 +39,7 @@ public class App {
         get("/register", (request, response) -> {
             Map<String,Object> model = new HashMap<String,Object>();
             model.put("template", "templates/register.vtl");
-            return new ModelAndView(model, layout);
+            return new ModelAndView(model, layout_db);
         }, new VelocityTemplateEngine());
 
         // register submit

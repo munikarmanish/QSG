@@ -1,9 +1,8 @@
 @import url(http://fonts.googleapis.com/css?family=Lato);
 
-.container
+.container1
 {
-    width:800px;
-    overflow:hidden;
+    display:inline-block;   overflow:hidden;
     display:inline-block;
 }
 .side-bar
@@ -86,7 +85,7 @@
 
 .content
 {
-    padding-left: 200px;
+ padding-left: 200px;
     transition: padding-left 0.5s;
 }
 
