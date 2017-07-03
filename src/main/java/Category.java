@@ -41,6 +41,12 @@ public class Category extends Timestamped {
     // methods
 
     public Category save() {
+        // first check if already exists
+        Category c = Category.findByName(this.name);
+        if (c != null) {
+            return c;
+        }
+
         try (Connection con = DB.sql2o.open()) {
             String sql = "INSERT INTO categories (name) VALUES (:name)";
             this.id = con.createQuery(sql, true)
@@ -82,6 +88,15 @@ public class Category extends Timestamped {
             String sql = "SELECT * FROM categories WHERE id=:id";
             return con.createQuery(sql)
                 .addParameter("id", id)
+                .executeAndFetchFirst(Category.class);
+        }
+    }
+
+    public static Category findByName(String name) {
+        try (Connection con = DB.sql2o.open()) {
+            String sql = "SELECT * FROM categories WHERE name LIKE :name";
+            return con.createQuery(sql)
+                .addParameter("name", name)
                 .executeAndFetchFirst(Category.class);
         }
     }

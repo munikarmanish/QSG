@@ -33,6 +33,12 @@ public class CategoryTest {
     }
 
     @Test
+    public void find_category_by_name() {
+        Category c = new Category("Test").save();
+        assertEquals(c, Category.findByName("test"));
+    }
+
+    @Test
     public void get_all_questions() {
         User u = new User("test").save();
         Category c = new Category("test").save();
