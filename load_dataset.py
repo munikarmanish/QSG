@@ -24,9 +24,9 @@ def clean_database():
     con = mysql.connector.connect(**DB_CONFIG)
     cursor = con.cursor()
     for table in DB_TABLES:
-        cursor.execute("SET FOREIGN_KEY_CHECKS = 0");
+        cursor.execute("SET FOREIGN_KEY_CHECKS = 0")
         cursor.execute("TRUNCATE TABLE {}".format(table))
-        cursor.execute("SET FOREIGN_KEY_CHECKS = 1");
+        cursor.execute("SET FOREIGN_KEY_CHECKS = 1")
     con.commit()
     cursor.close()
     con.close()
@@ -35,7 +35,7 @@ def clean_database():
 def load():
     clean_database()
 
-    con = mysql.connector.connect(**DB_CONFIG);
+    con = mysql.connector.connect(**DB_CONFIG)
     cursor = con.cursor(named_tuple=True)
 
     for category in CATEGORIES:
@@ -49,21 +49,22 @@ def load():
             for row in reader:
                 difficulty = int(row[0])
                 question = row[1].strip()
-                answers = [s.strip() for s in row[2:]]
+                answers = [s.strip() for s in row[2:6]]
 
                 # insert the question
                 cursor.execute(
-                    "INSERT INTO questions (userId, categoryId, text, difficulty)"
+                    "INSERT INTO questions (userId, categoryId, `text`, difficulty)"
                     " VALUES (%s, %s, %s, %s)",
                     (None, category_id, question, difficulty))
                 question_id = cursor.lastrowid
 
                 # insert the answers
                 for (index, answer) in enumerate(answers):
+                    assert len(answer) > 0, "[{}] {}".format(category, question)
                     cursor.execute(
-                        "INSERT INTO answers (questionId, text, isCorrect)"
+                        "INSERT INTO answers (questionId, `text`, isCorrect)"
                         " VALUES (%s, %s, %s)",
-                        (question_id, answer, index==0))
+                        (question_id, answer, index == 0))
 
     con.commit()
     cursor.close()
