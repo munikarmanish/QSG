@@ -1,33 +1,45 @@
-<h1>Login</h1>
+<div class="panel panel-default" style="margin-left:300px;">
+  <div class="panel-heading">REGISTER</div>
+  <div class="panel-body">
+    <div style="width:300px;">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="just-txt-div">
+            <form action="/register" method="post">
+              <!-- name -->
+              <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" name="name" id="name" class="form-control" placeholder="John Doe" required>
+              </div>
 
-<section>
-  <form action="/register" method="post">
+              <!-- email -->
+              <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" name="email" id="email" class="form-control"  placeholder="someone@example.com" required>
+              </div>
 
-    <!-- name -->
-    <div class="form-group">
-      <label for="name">Name</label>
-      <input type="text" name="name" id="name" class="form-control" required>
+              <!-- username -->
+              <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" name="username" id="username" class="form-control"  placeholder="johndoe" required>
+              </div>
+
+              <!-- password -->
+              <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" name="password" id="password" class="form-control"  placeholder="*********" required>
+              </div>
+
+              <!-- action buttons -->
+              <button type="submit" class="btn btn-primary btn-outline-success">Register</button>
+            </form>
+
+          </div>
+        </div>
+      </div>
     </div>
 
-    <!-- email -->
-    <div class="form-group">
-      <label for="email">Email</label>
-      <input type="email" name="email" id="email" class="form-control" required>
-    </div>
+  </div>
 
-    <!-- username -->
-    <div class="form-group">
-      <label for="username">Username</label>
-      <input type="text" name="username" id="username" class="form-control" required>
-    </div>
 
-    <!-- password -->
-    <div class="form-group">
-      <label for="password">Password</label>
-      <input type="password" name="password" id="password" class="form-control" required>
-    </div>
-
-    <!-- action buttons -->
-    <button type="submit" class="btn btn-outline-success">Register</button>
-  </form>
-</section>
+  <!--SET-DIV SECTION END-->
