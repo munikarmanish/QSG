@@ -4,6 +4,8 @@ import spark.template.velocity.VelocityTemplateEngine;
 import static spark.Spark.*;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.List;
+import org.sql2o.*;
 
 
 public class App {
@@ -103,14 +105,34 @@ public class App {
         //     // redirect to home
         //     response.redirect("/");
         // }, new VelocityTemplateEngine());
-        //
-        // // List questions
-        // get("/questions", (request, response) -> {
-        //     Map<String,Object> model = new HashMap<String,Object>();
-        //     model.put("template", "templates/question_list.vtl");
-        //     return new ModelAndView(model, layout);
-        // }, new VelocityTemplateEngine());
-        //
+
+        // List questions
+        get("/questions", (request, response) -> {
+            Map<String,Object> model = new HashMap<String,Object>();
+            model.put("template", "templates/question_list.vtl");
+
+            int page = 1;
+            if (request.queryParams("page") != null) {
+                page = Integer.parseInt(request.queryParams("page"));
+            }
+
+            int start = (page-1)*20;
+
+            List<Question> questions;
+            try (Connection con = DB.sql2o.open()) {
+                questions = con.createQuery("SELECT * FROM questions LIMIT :start, :size")
+                    .addParameter("start", start)
+                    .addParameter("size", 20)
+                    .executeAndFetch(Question.class);
+            }
+
+            model.put("questions", questions);
+            model.put("currentPage", page);
+            model.put("prevPage", page-1);
+            model.put("nextPage", page+1);
+            return new ModelAndView(model, layout);
+        }, new VelocityTemplateEngine());
+
         // // Question add form
         // get("/questions/add", (request, response) -> {
         //     Map<String,Object> model = new HashMap<String,Object>();
