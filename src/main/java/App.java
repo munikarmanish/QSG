@@ -12,8 +12,7 @@ public class App {
     {
         staticFileLocation("/public");
         String layout = "templates/layout.vtl";
-        String layout_db= "templates/layout_dashboard.vtl";
-
+  
         // Home
         get("/", (request, response) -> {
             Map<String,Object> model = new HashMap<String,Object>();
@@ -25,7 +24,7 @@ public class App {
         get("/admin", (request, response) -> {
             Map<String,Object> model = new HashMap<String,Object>();
             model.put("template", "templates/admin.vtl");
-            return new ModelAndView(model, layout_db);
+            return new ModelAndView(model, layout);
         }, new VelocityTemplateEngine());
 
         // Message
@@ -39,7 +38,7 @@ public class App {
         get("/register", (request, response) -> {
             Map<String,Object> model = new HashMap<String,Object>();
             model.put("template", "templates/register.vtl");
-            return new ModelAndView(model, layout_db);
+            return new ModelAndView(model, layout);
         }, new VelocityTemplateEngine());
 
         // register submit
