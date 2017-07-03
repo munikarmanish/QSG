@@ -19,7 +19,7 @@
 {
     list-style:none;
     padding:0px;
-    
+
 }
 
 .side-bar ul li.menu-head
@@ -44,7 +44,7 @@
     height:50px;
 }
 
-.side-bar ul .menu li  a 
+.side-bar ul .menu li  a
 {
     color:#fff;
     text-decoration:none;
@@ -58,7 +58,7 @@
 
 .side-bar ul .menu li  a:hover
 {
-    border-left:3px solid #ECECEA;    
+    border-left:3px solid #ECECEA;
     padding-left:17px;
 }
 
@@ -76,7 +76,7 @@
    height: 0;
    border-top: 20px solid transparent;
     border-bottom: 20px solid transparent;
-	
+
 	border-left: 7px solid #D9853B;
     margin-top: -10px;
     margin-left: 180px;
@@ -91,12 +91,12 @@
 
 .active > .side-bar
 {
-    margin-left:-150px;   
+    margin-left:-130px;
     transition: margin-left 0.5s;
 }
 
 .active > .content
 {
-    padding-left:50px;
+    padding-left:70px;
     transition: padding-left 0.5s;
 }
