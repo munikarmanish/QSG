@@ -86,7 +86,7 @@
 .content
 {
  padding-left: 200px;
-    transition: padding-left 0.5s;
+  transition: padding-left 0.5s;
 }
 
 .active > .side-bar
