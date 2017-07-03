@@ -72,7 +72,7 @@ public class Category extends Timestamped {
 
     public static List<Category> all() {
         try (Connection con = DB.sql2o.open()) {
-            String sql = "SELECT * FROM categories";
+            String sql = "SELECT * FROM categories ORDER BY name ASC";
             return con.createQuery(sql).executeAndFetch(Category.class);
         }
     }

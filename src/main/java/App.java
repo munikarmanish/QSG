@@ -10,6 +10,8 @@ import org.sql2o.*;
 
 public class App {
 
+    public static final int QUESTIONS_PER_PAGE = 10;
+
     public static void main(String[] args)
     {
         staticFileLocation("/public");
@@ -92,20 +94,6 @@ public class App {
             return new ModelAndView(model, layout_signinup);
         }, new VelocityTemplateEngine());
 
-        // // Add user (for admin)
-        // get("/users/add", (request, response) -> {
-        //     Map<String,Object> model = new HashMap<String,Object>();
-        //     model.put("template", "templates/user_add.vtl");
-        //     return new ModelAndView(model, layout);
-        // }, new VelocityTemplateEngine());
-        //
-        // // Add user submit
-        // post("/users", (request, response) -> {
-        //     // TODO: process form
-        //     // redirect to home
-        //     response.redirect("/");
-        // }, new VelocityTemplateEngine());
-
         // List questions
         get("/questions", (request, response) -> {
             Map<String,Object> model = new HashMap<String,Object>();
@@ -115,16 +103,8 @@ public class App {
             if (request.queryParams("page") != null) {
                 page = Integer.parseInt(request.queryParams("page"));
             }
-
-            int start = (page-1)*20;
-
-            List<Question> questions;
-            try (Connection con = DB.sql2o.open()) {
-                questions = con.createQuery("SELECT * FROM questions LIMIT :start, :size")
-                    .addParameter("start", start)
-                    .addParameter("size", 20)
-                    .executeAndFetch(Question.class);
-            }
+            int start = (page - 1) * 20;
+            List<Question> questions = Question.limit(start, QUESTIONS_PER_PAGE);
 
             model.put("questions", questions);
             model.put("currentPage", page);
@@ -133,46 +113,37 @@ public class App {
             return new ModelAndView(model, layout);
         }, new VelocityTemplateEngine());
 
-        // // Question add form
-        // get("/questions/add", (request, response) -> {
-        //     Map<String,Object> model = new HashMap<String,Object>();
-        //     model.put("template", "templates/question_add.vtl");
-        //     return new ModelAndView(model, layout);
-        // }, new VelocityTemplateEngine());
-        //
-        // // Question detail (update form)
-        // get("/questions/:qid", (request, response) -> {
-        //     Map<String,Object> model = new HashMap<String,Object>();
-        //     model.put("template", "templates/question_update.vtl");
-        //     return new ModelAndView(model, layout);
-        // }, new VelocityTemplateEngine());
-        //
-        // // Question submit
-        // post("/questions", (request, response) -> {
-        //     // TODO: process the form
-        //     // redirect to list
-        //     response.redirect("/questions");
-        // }, new VelocityTemplateEngine());
-        //
-        // // List interview
-        // get("/interviews", (request, response) -> {
-        //     Map<String,Object> model = new HashMap<String,Object>();
-        //     model.put("template", "templates/interview_list.vtl");
-        //     return new ModelAndView(model, layout);
-        // }, new VelocityTemplateEngine());
-        //
-        // // Interview add
-        // get("/interviews/add", (request, response) -> {
-        //     Map<String,Object> model = new HashMap<String,Object>();
-        //     model.put("template", "templates/interview_add.vtl");
-        //     return new ModelAndView(model, layout);
-        // }, new VelocityTemplateEngine());
-        //
-        // // Interview detail
-        // get("/interviews/:id", (request, response) -> {
-        //     Map<String,Object> model = new HashMap<String,Object>();
-        //     model.put("template", "templates/interview_detail.vtl");
-        //     return new ModelAndView(model, layout);
-        // }, new VelocityTemplateEngine());
+        // Add question
+        get("/questions/add", (request, response) -> {
+            Map<String,Object> model = new HashMap<String,Object>();
+            model.put("template", "templates/question_add_form.vtl");
+            model.put("categories", Category.all());
+            return new ModelAndView(model, layout);
+        }, new VelocityTemplateEngine());
+
+        // Submit question
+        post("/questions", (request, response) -> {
+            Map<String,Object> model = new HashMap<String,Object>();
+
+            int categoryId = Integer.parseInt(request.queryParams("category"));
+            String question = request.queryParams("question");
+            String answer1 = request.queryParams("answer1");
+            String answer2 = request.queryParams("answer2");
+            String answer3 = request.queryParams("answer3");
+            String answer4 = request.queryParams("answer4");
+            int difficulty = Integer.parseInt(request.queryParams("difficulty"));
+
+            // userId is 0 = NULL for now
+            Question q = new Question(0, categoryId, question, difficulty).save();
+            Answer a;
+            a = new Answer(q, answer1, true).save();
+            a = new Answer(q, answer2, false).save();
+            a = new Answer(q, answer3, false).save();
+            a = new Answer(q, answer4, false).save();
+
+            response.redirect("/questions");
+
+            return new ModelAndView(model, layout);
+        }, new VelocityTemplateEngine());
     }
 }

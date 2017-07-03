@@ -20,7 +20,7 @@ public class QuestionTest {
     public void instantiate_with_user_and_category_id() {
         User u = new User("test").save();
         Category c = new Category("test").save();
-        Question q = new Question(u.getId(), c.getId(), "Math", 0).save();
+        Question q = new Question(0, c.getId(), "Math", 0).save();
         assertTrue(q instanceof Question);
     }
 
@@ -108,6 +108,21 @@ public class QuestionTest {
         q.addAnswer("Answer", false);
         assertEquals("Answer", q.getAnswers().get(0).getText());
         assertEquals(false, q.getAnswers().get(0).getIsCorrect());
+    }
+
+    @Test
+    public void limit() {
+        User u = new User("test").save();
+        Category c = new Category("test").save();
+        Question q1 = new Question(u, c, "Math", 0).save();
+        Question q2 = new Question(u, c, "Math", 0).save();
+        Question q3 = new Question(u, c, "Math", 0).save();
+        Question q4 = new Question(u, c, "Math", 0).save();
+        assertEquals(2, Question.limit(0, 2).size());
+        assertTrue(Question.limit(0, 2).contains(q4));
+        assertTrue(Question.limit(0, 2).contains(q3));
+        assertEquals(1, Question.limit(3, 2).size());
+        assertTrue(Question.limit(3, 2).contains(q1));
     }
 
 }

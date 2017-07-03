@@ -22,7 +22,11 @@ public class Question extends Timestamped {
     // constructors
 
     public Question(User user, Category category, String text, int difficulty) {
-        this.setUserId(user.getId());
+        if (user == null) {
+            this.setUserId(0);
+        } else {
+            this.setUserId(user.getId());
+        }
         this.setCategoryId(category.getId());
         this.setText(text);
         this.setDifficulty(difficulty);
@@ -95,10 +99,17 @@ public class Question extends Timestamped {
 
     public Question save() {
         try (Connection con = DB.sql2o.open()) {
+            Integer userId = null;
+            if (this.userId > 0) {
+                userId = this.userId;
+            }
             String sql = "INSERT INTO questions (userId, categoryId, text, difficulty)"
                          + " VALUES (:userId, :categoryId, :text, :difficulty)";
             this.id = con.createQuery(sql, true)
-                .bind(this)
+                .addParameter("userId", userId)
+                .addParameter("categoryId", this.categoryId)
+                .addParameter("text", this.text)
+                .addParameter("difficulty", this.difficulty)
                 .executeUpdate()
                 .getKey(int.class);
             return Question.findById(this.id);
@@ -157,7 +168,7 @@ public class Question extends Timestamped {
 
     public static List<Question> all() {
         try (Connection con = DB.sql2o.open()) {
-            String sql = "SELECT * FROM questions";
+            String sql = "SELECT * FROM questions ORDER BY id DESC";
             return con.createQuery(sql).executeAndFetch(Question.class);
         }
     }
@@ -168,6 +179,15 @@ public class Question extends Timestamped {
             return con.createQuery(sql)
                 .addParameter("id", id)
                 .executeAndFetchFirst(Question.class);
+        }
+    }
+
+    public static List<Question> limit(int start_index, int size) {
+        try (Connection con = DB.sql2o.open()) {
+            return con.createQuery("SELECT * FROM questions ORDER BY id DESC LIMIT :start, :size")
+                .addParameter("start", start_index)
+                .addParameter("size", size)
+                .executeAndFetch(Question.class);
         }
     }
 }
