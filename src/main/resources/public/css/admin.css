@@ -4,6 +4,7 @@
 {
     display:inline-block;   overflow:hidden;
     display:inline-block;
+    width: 100% ;
 }
 .side-bar
 {
@@ -86,7 +87,9 @@
 .content
 {
  padding-left: 200px;
-  transition: padding-left 0.5s;
+ transition: padding-left 0.5s;
+ width: auto;
+ display: inline-block;
 }
 
 .active > .side-bar
@@ -99,4 +102,9 @@
 {
     padding-left:70px;
     transition: padding-left 0.5s;
+}
+
+.inner-content{
+  property: inherit;
+  padding: 20px;
 }
