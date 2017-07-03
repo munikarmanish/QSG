@@ -36,6 +36,7 @@ public class App {
         get("/message", (request, response) -> {
             Map<String,Object> model = new HashMap<String,Object>();
             model.put("template", "templates/message.vtl");
+            model.put("message", request.queryParams("m"));
             return new ModelAndView(model, layout);
         }, new VelocityTemplateEngine());
 
@@ -83,13 +84,25 @@ public class App {
             }
 
             if (u.checkPassword(password)) {
-                // TODO
-                response.redirect("/message?m=SUCCESS");
+                request.session().attribute("userId", u.getId());
+                response.redirect("/message?m=LOGIN+SUCCESS+" + username);
             } else {
                 // TODO
-                response.redirect("/message?m=FAIL");
+                response.redirect("/message?m=LOGIN+FAIL");
             }
 
+            Map<String,Object> model = new HashMap<String,Object>();
+            return new ModelAndView(model, layout_signinup);
+        }, new VelocityTemplateEngine());
+
+        // Logout
+        get("/logout", (request, response) -> {
+            if (request.session().attribute("userId") == null) {
+                response.redirect("/message?m=NOT+LOGGED+IN");
+            } else {
+                request.session().removeAttribute("userId");
+                response.redirect("/login");
+            }
             Map<String,Object> model = new HashMap<String,Object>();
             return new ModelAndView(model, layout_signinup);
         }, new VelocityTemplateEngine());
