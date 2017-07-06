@@ -13,7 +13,7 @@ You need to have following packages installed:
 
 - Java development kit >= 8
 - Gradle
-- MySQL server and client
+- MySQL server
 
 Database
 ~~~~~~~~
@@ -37,6 +37,11 @@ The database schema is stored in ``db.sql`` file. To initialize the database jus
 Or you can directly use the following shell script::
 
     $ ./update_database.sh
+
+To load the sample question dataset, you need to have **python3** installed along with **mysql-connecter==2.1.4** package.
+Once you have these installed, you can load the dataset by::
+
+    # python3 load_dataset.py
 
 Usage
 -----
