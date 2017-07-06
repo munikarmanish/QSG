@@ -62,10 +62,8 @@ public class App {
             }
 
             response.redirect("/login");
-
-            Map<String,Object> model = new HashMap<String,Object>();
-            return new ModelAndView(model, layout_signinup);
-        }, new VelocityTemplateEngine());
+            return 0;
+        });
 
         // Login
         get("/login", (request, response) -> {
@@ -92,9 +90,8 @@ public class App {
                 response.redirect("/message?m=LOGIN+FAIL");
             }
 
-            Map<String,Object> model = new HashMap<String,Object>();
-            return new ModelAndView(model, layout_signinup);
-        }, new VelocityTemplateEngine());
+            return 0;
+        });
 
         // Logout
         get("/logout", (request, response) -> {
@@ -104,9 +101,8 @@ public class App {
                 request.session().removeAttribute("userId");
                 response.redirect("/login");
             }
-            Map<String,Object> model = new HashMap<String,Object>();
-            return new ModelAndView(model, layout_signinup);
-        }, new VelocityTemplateEngine());
+            return 0;
+        });
 
         // List questions
         get("/questions", (request, response) -> {
@@ -137,8 +133,6 @@ public class App {
 
         // Submit question
         post("/questions", (request, response) -> {
-            Map<String,Object> model = new HashMap<String,Object>();
-
             int categoryId = Integer.parseInt(request.queryParams("category"));
             String question = request.queryParams("question");
             String answer1 = request.queryParams("answer1");
@@ -156,12 +150,11 @@ public class App {
             a = new Answer(q, answer4, false).save();
 
             response.redirect("/questions");
-
-            return new ModelAndView(model, layout);
-        }, new VelocityTemplateEngine());
+            return 0;
+        });
 
         //  List category
-        get("/category", (request, response) -> {
+        get("/categories", (request, response) -> {
             Map<String,Object> model = new HashMap<String,Object>();
             List<Category> categories_obj_list = new ArrayList();
             List<String> categories_list = new ArrayList();
@@ -170,13 +163,13 @@ public class App {
                 categories_list.add(i.getName());
             }
             model.put("template", "templates/category_list.vtl");
-            model.put("categories",categories_list);
+            model.put("categories", categories_list);
             // System.out.println(categories_list);
             return new ModelAndView(model, layout);
         }, new VelocityTemplateEngine());
 
         // // Category add form
-        get("/category/add", (request, response) -> {
+        get("/categories/add", (request, response) -> {
             Map<String,Object> model = new HashMap<String,Object>();
             model.put("template", "templates/category_add.vtl");
             return new ModelAndView(model, layout);
@@ -184,12 +177,11 @@ public class App {
 
 
         // // Category submit
-        post("/category/add",(request, response) -> {
+        post("/categories", (request, response) -> {
             String category_name = request.queryParams("category_name");
-            Category obj = new Category(category_name);
-            obj.save();
-            response.redirect("/category");
-            return "Success";
+            Category obj = new Category(category_name).save();
+            response.redirect("/categories");
+            return 0;
         });
     }
 }
