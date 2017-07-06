@@ -5,6 +5,7 @@ import static spark.Spark.*;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
+import java.util.ArrayList;
 import org.sql2o.*;
 
 
@@ -158,5 +159,37 @@ public class App {
 
             return new ModelAndView(model, layout);
         }, new VelocityTemplateEngine());
+
+        //  List category
+        get("/category", (request, response) -> {
+            Map<String,Object> model = new HashMap<String,Object>();
+            List<Category> categories_obj_list = new ArrayList();
+            List<String> categories_list = new ArrayList();
+            categories_obj_list = Category.all();
+            for (Category i: categories_obj_list ) {
+                categories_list.add(i.getName());
+            }
+            model.put("template", "templates/category_list.vtl");
+            model.put("categories",categories_list);
+            // System.out.println(categories_list);
+            return new ModelAndView(model, layout);
+        }, new VelocityTemplateEngine());
+
+        // // Category add form
+        get("/category/add", (request, response) -> {
+            Map<String,Object> model = new HashMap<String,Object>();
+            model.put("template", "templates/category_add.vtl");
+            return new ModelAndView(model, layout);
+        }, new VelocityTemplateEngine());
+
+
+        // // Category submit
+        post("/category/add",(request, response) -> {
+            String category_name = request.queryParams("category_name");
+            Category obj = new Category(category_name);
+            obj.save();
+            response.redirect("/category");
+            return "Success";
+        });
     }
 }
