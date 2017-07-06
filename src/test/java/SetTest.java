@@ -59,12 +59,11 @@ public class SetTest {
         Category c = new Category("test").save();
         Question q1 = new Question(u, c, "Question 1", 0).save();
         Question q2 = new Question(u, c, "Question 2", 0).save();
-        s.addQuestion(q1, 1, 0);
-        s.addQuestion(q2, 2, 1);
+        s.addQuestion(q1, 2, 0);
+        s.addQuestion(q2, 1, 1);
         assertEquals(2, s.getQuestions().size());
-        assertTrue(s.getQuestions().contains(q1));
-        assertEquals(q1.getId(), s.getQuestions().get(0).getId());
-        assertTrue(s.getQuestions().contains(q2));
+        assertEquals(q2, s.getQuestions().get(0));
+        assertEquals(q1, s.getQuestions().get(1));
         // make sure can't add same question twice
         exception.expect(Sql2oException.class);
         s.addQuestion(q1, 1, 0);

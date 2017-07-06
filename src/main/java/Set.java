@@ -107,7 +107,8 @@ public class Set extends Timestamped {
             String q = "SELECT questions.id, userId, categoryId, text, difficulty,"
                 + " questions.createdAt, questions.updatedAt FROM questions"
                 + " INNER JOIN sets_questions ON questions.id = sets_questions.questionId"
-                + " WHERE sets_questions.setId = :id";
+                + " WHERE sets_questions.setId = :id"
+                + " ORDER BY sets_questions.questionNumber ASC";
             return con.createQuery(q).bind(this).executeAndFetch(Question.class);
         }
     }
