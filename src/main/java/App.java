@@ -153,6 +153,15 @@ public class App {
             return 0;
         });
 
+        // delete question
+        post("/questions/:qid/delete", (request, response) -> {
+            int id = Integer.parseInt(request.params(":qid"));
+            Question q = Question.findById(id);
+            q.delete();
+            response.redirect("/questions");
+            return 0;
+        });
+
         //  List category
         get("/categories", (request, response) -> {
             Map<String,Object> model = new HashMap<String,Object>();
