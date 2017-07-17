@@ -4,9 +4,18 @@ import spark.template.velocity.VelocityTemplateEngine;
 import static spark.Spark.*;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.List;
+import java.util.ArrayList;
+import org.sql2o.*;
+import java.sql.Timestamp;
+import java.util.Date;
+import java.time.LocalDate;
+import java.text.DateFormat;
 
 
 public class App {
+
+    public static final int QUESTIONS_PER_PAGE = 10;
 
     public static void main(String[] args)
     {
@@ -32,6 +41,7 @@ public class App {
         get("/message", (request, response) -> {
             Map<String,Object> model = new HashMap<String,Object>();
             model.put("template", "templates/message.vtl");
+            model.put("message", request.queryParams("m"));
             return new ModelAndView(model, layout);
         }, new VelocityTemplateEngine());
 
@@ -56,10 +66,8 @@ public class App {
             }
 
             response.redirect("/login");
-
-            Map<String,Object> model = new HashMap<String,Object>();
-            return new ModelAndView(model, layout_signinup);
-        }, new VelocityTemplateEngine());
+            return 0;
+        });
 
         // Login
         get("/login", (request, response) -> {
@@ -79,78 +87,152 @@ public class App {
             }
 
             if (u.checkPassword(password)) {
-                // TODO
-                response.redirect("/message?m=SUCCESS");
+                request.session().attribute("userId", u.getId());
+                response.redirect("/message?m=LOGIN+SUCCESS+" + username);
             } else {
                 // TODO
-                response.redirect("/message?m=FAIL");
+                response.redirect("/message?m=LOGIN+FAIL");
             }
 
+            return 0;
+        });
+
+        // Logout
+        get("/logout", (request, response) -> {
+            if (request.session().attribute("userId") == null) {
+                response.redirect("/message?m=NOT+LOGGED+IN");
+            } else {
+                request.session().removeAttribute("userId");
+                response.redirect("/login");
+            }
+            return 0;
+        });
+
+        // List questions
+        get("/questions", (request, response) -> {
+            Map<String,Object> model = new HashMap<String,Object>();
+            model.put("template", "templates/question_list.vtl");
+
+            int page = 1;
+            if (request.queryParams("page") != null) {
+                page = Integer.parseInt(request.queryParams("page"));
+            }
+            int start = (page - 1) * 20;
+            List<Question> questions = Question.limit(start, QUESTIONS_PER_PAGE);
+
+            model.put("questions", questions);
+            model.put("currentPage", page);
+            model.put("prevPage", page-1);
+            model.put("nextPage", page+1);
+            return new ModelAndView(model, layout);
+        }, new VelocityTemplateEngine());
+
+        // List questions setwise
+        get("/questions_set", (request, response) -> {
+            Map<String,Object> model = new HashMap<String,Object>();
+            model.put("template", "templates/question_list.vtl");
+            int page = 1;
+            if (request.queryParams("page") != null) {
+                page = Integer.parseInt(request.queryParams("page"));
+            }
+            int start = (page - 1) * 20;
+            List<Question> questions = Question.limit(start, QUESTIONS_PER_PAGE);
+            model.put("questions", questions);
+            model.put("currentPage", page);
+            model.put("prevPage", page-1);
+            model.put("nextPage", page+1);
+            return new ModelAndView(model, layout);
+        }, new VelocityTemplateEngine());
+
+
+        // Add question
+        get("/questions/add", (request, response) -> {
+            Map<String,Object> model = new HashMap<String,Object>();
+            model.put("template", "templates/question_add_form.vtl");
+            model.put("categories", Category.all());
+            return new ModelAndView(model, layout);
+        }, new VelocityTemplateEngine());
+
+        // Submit question
+        post("/questions", (request, response) -> {
+            int categoryId = Integer.parseInt(request.queryParams("category"));
+            String question = request.queryParams("question");
+            String answer1 = request.queryParams("answer1");
+            String answer2 = request.queryParams("answer2");
+            String answer3 = request.queryParams("answer3");
+            String answer4 = request.queryParams("answer4");
+            int difficulty = Integer.parseInt(request.queryParams("difficulty"));
+            // userId is 0 = NULL for now
+            Question q = new Question(0, categoryId, question, difficulty).save();
+            Answer a;
+            a = new Answer(q, answer1, true).save();
+            a = new Answer(q, answer2, false).save();
+            a = new Answer(q, answer3, false).save();
+            a = new Answer(q, answer4, false).save();
+            response.redirect("/questions");
+            return 0;
+        });
+        
+        //Interview selector
+        get("/interview_selector", (request, response) -> {
+            Map<String,Object> model = new HashMap<String,Object>();
+            model.put("template", "templates/interview_selector.vtl");
+            return new ModelAndView(model, layout);
+        }, new VelocityTemplateEngine());
+        //interview selector post method
+        
+        post("/interview_selector", (request, response) -> {       
+            String title= request.queryParams("title");
+            // time stamp format is yyyy-mm-dd hh:mm:ss
+            // datetime-local is 2017-06-01T08:30
+            String dateString= request.queryParams("time");
+            String dateModified = dateString.replace( "T" , " " );
+            String fulldateString= dateModified +":00";
+            Timestamp ts = Timestamp.valueOf(fulldateString);
+            int difficulty = Integer.parseInt(request.queryParams("difficulty"));
+            int duration = Integer.parseInt(request.queryParams("duration"));
+            String category = request.queryParams("category");
+            int m=1;
+            Interview i = new Interview(0, title, ts, duration).save(); //userid is 0 for now
+            Set s = new Set(i,m).save();
+            if (i == null) {
+                response.redirect("/message?m=ERROR");
+            }
+            response.redirect("/questions");
             Map<String,Object> model = new HashMap<String,Object>();
             return new ModelAndView(model, layout_signinup);
         }, new VelocityTemplateEngine());
 
-        // // Add user (for admin)
-        // get("/users/add", (request, response) -> {
-        //     Map<String,Object> model = new HashMap<String,Object>();
-        //     model.put("template", "templates/user_add.vtl");
-        //     return new ModelAndView(model, layout);
-        // }, new VelocityTemplateEngine());
-        //
-        // // Add user submit
-        // post("/users", (request, response) -> {
-        //     // TODO: process form
-        //     // redirect to home
-        //     response.redirect("/");
-        // }, new VelocityTemplateEngine());
-        //
-        // // List questions
-        // get("/questions", (request, response) -> {
-        //     Map<String,Object> model = new HashMap<String,Object>();
-        //     model.put("template", "templates/question_list.vtl");
-        //     return new ModelAndView(model, layout);
-        // }, new VelocityTemplateEngine());
-        //
-        // // Question add form
-        // get("/questions/add", (request, response) -> {
-        //     Map<String,Object> model = new HashMap<String,Object>();
-        //     model.put("template", "templates/question_add.vtl");
-        //     return new ModelAndView(model, layout);
-        // }, new VelocityTemplateEngine());
-        //
-        // // Question detail (update form)
-        // get("/questions/:qid", (request, response) -> {
-        //     Map<String,Object> model = new HashMap<String,Object>();
-        //     model.put("template", "templates/question_update.vtl");
-        //     return new ModelAndView(model, layout);
-        // }, new VelocityTemplateEngine());
-        //
-        // // Question submit
-        // post("/questions", (request, response) -> {
-        //     // TODO: process the form
-        //     // redirect to list
-        //     response.redirect("/questions");
-        // }, new VelocityTemplateEngine());
-        //
-        // // List interview
-        // get("/interviews", (request, response) -> {
-        //     Map<String,Object> model = new HashMap<String,Object>();
-        //     model.put("template", "templates/interview_list.vtl");
-        //     return new ModelAndView(model, layout);
-        // }, new VelocityTemplateEngine());
-        //
-        // // Interview add
-        // get("/interviews/add", (request, response) -> {
-        //     Map<String,Object> model = new HashMap<String,Object>();
-        //     model.put("template", "templates/interview_add.vtl");
-        //     return new ModelAndView(model, layout);
-        // }, new VelocityTemplateEngine());
-        //
-        // // Interview detail
-        // get("/interviews/:id", (request, response) -> {
-        //     Map<String,Object> model = new HashMap<String,Object>();
-        //     model.put("template", "templates/interview_detail.vtl");
-        //     return new ModelAndView(model, layout);
-        // }, new VelocityTemplateEngine());
+
+        //  List category
+        get("/categories", (request, response) -> {
+            Map<String,Object> model = new HashMap<String,Object>();
+            List<Category> categories_obj_list = new ArrayList();
+            List<String> categories_list = new ArrayList();
+            categories_obj_list = Category.all();
+            for (Category i: categories_obj_list ) {
+                categories_list.add(i.getName());
+            }
+            model.put("template", "templates/category_list.vtl");
+            model.put("categories", categories_list);
+            // System.out.println(categories_list);
+            return new ModelAndView(model, layout);
+        }, new VelocityTemplateEngine());
+
+        // // Category add form
+        get("/categories/add", (request, response) -> {
+            Map<String,Object> model = new HashMap<String,Object>();
+            model.put("template", "templates/category_add.vtl");
+            return new ModelAndView(model, layout);
+        }, new VelocityTemplateEngine());
+
+
+        // // Category submit
+        post("/categories", (request, response) -> {
+            String category_name = request.queryParams("category_name");
+            Category obj = new Category(category_name).save();
+            response.redirect("/categories");
+            return 0;
+        });
     }
 }
