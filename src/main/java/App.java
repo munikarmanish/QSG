@@ -219,12 +219,9 @@ public class App {
 
         //  List category
         get("/categories", (request, response) -> {
-            Map<String,Object> model = new HashMap<String,Object>();
-            List<Category> categories_list = new ArrayList();
-            categories_list = Category.all();
-
+            Map<String,Object> model = new HashMap<String,Object>();Category.all();
             model.put("template", "templates/category_list.vtl");
-            model.put("categories", categories_list);
+            model.put("categories", Category.all());
             // System.out.println(categories_list);
             return new ModelAndView(model, layout);
         }, new VelocityTemplateEngine());
@@ -232,8 +229,7 @@ public class App {
         // // Category submit
         post("/categories",(request, response) -> {
             String category_name = request.queryParams("category_name");
-            Category obj = new Category(category_name);
-            obj.save();
+            Category c = new Category(category_name).save();
             response.redirect("/categories");
             return "Success";
         });

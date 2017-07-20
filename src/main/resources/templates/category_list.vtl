@@ -5,7 +5,7 @@
       <div class="row">
         <div class="col-md-12">
           <div class="just-txt-div">
-            <form action="/categories/add" method="post">
+            <form action="/categories" method="post">
 
               <div class="form-group">
                 <label for="category_name">Category Name</label>
@@ -25,22 +25,22 @@
 
 <h1>Categories</h1>
 #if ($categories.size() > 0)
-<div class="row">
+  <div class="row">
   #foreach ($c in $categories)
     <div class="col-md-3">[$velocityCount] $c.getName()
-
       <form id="$c.getName()" method="post" action="/categories/$c.getId()/delete">
         <a href="javascript:{}" onclick="document.getElementById('$c.getName()').submit(); return false;">Delete</a>
       </form>
-    </div
-
+    </div><!--col-->
   #end
+  </div><!--row-->
 #else
-<div class="col-md-12">
-  <p>No categories</p>
-</div>
+  <div class="row">
+    <div class="col-md-12">
+      <p>No categories</p>
+    </div>
+  </div><!--row-->
 #end
-</div>
 
 <script type="text/javascript">
 window.onload = function() {
