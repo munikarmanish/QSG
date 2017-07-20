@@ -99,18 +99,28 @@ public class Question extends Timestamped {
 
     public Question save() {
         try (Connection con = DB.sql2o.open()) {
-            this.userId = (this.userId > 0)? this.userId : null;
+            Integer userId = (this.userId > 0)? this.userId : null;
             String sql;
             if (this.id > 0) {
                 sql = "UPDATE questions SET userId=:userId, categoryId=:categoryId, text=:text, difficulty=:difficulty WHERE id=:id";
+                con.createQuery(sql)
+                        .addParameter("userId", userId)
+                        .addParameter("categoryId", this.categoryId)
+                        .addParameter("text", this.text)
+                        .addParameter("difficulty", this.difficulty)
+                        .addParameter("id", this.id)
+                        .executeUpdate();
             } else {
                 sql = "INSERT INTO questions (userId, categoryId, text, difficulty)"
                         + " VALUES (:userId, :categoryId, :text, :difficulty)";
+                this.id = con.createQuery(sql, true)
+                        .addParameter("userId", userId)
+                        .addParameter("categoryId", this.categoryId)
+                        .addParameter("text", this.text)
+                        .addParameter("difficulty", this.difficulty)
+                        .executeUpdate()
+                        .getKey(int.class);
             }
-            this.id = con.createQuery(sql, true)
-                .bind(this)
-                .executeUpdate()
-                .getKey(int.class);
             return Question.findById(this.id);
         }
     }
