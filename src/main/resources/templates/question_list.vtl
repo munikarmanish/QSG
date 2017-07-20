@@ -2,7 +2,7 @@
 
 #if ($questions.size() > 0)
   #foreach ($q in $questions)
-    <p>[$q.getId()] $q.getText()</p>
+    <p>[$velocityCount] $q.getText()</p>
     <ul>
       #foreach ($a in $q.getAnswers())
         #if ($a.getIsCorrect())
@@ -24,3 +24,9 @@
 
 Page $currentPage
 <a href="?page=$nextPage">Next</a>
+
+<script type="text/javascript">
+window.onload = function() {
+  document.getElementById('questions').className = 'active';
+};
+</script>>

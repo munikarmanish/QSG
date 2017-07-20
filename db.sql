@@ -39,7 +39,7 @@ CREATE TABLE `questions` (
     `id` INTEGER  AUTO_INCREMENT  NOT NULL,
     `userId` INTEGER,
     `categoryId` INTEGER,
-    `text` VARCHAR(255)  NOT NULL,
+    `text` VARCHAR(1024)  NOT NULL,
     -- difficulty:
     --   0 - Easy
     --   1 - Medium

@@ -1,52 +1,77 @@
-<h1>Add Question</h1>
+<div class="panel panel-default">
+  <div class="panel-heading">Add Questions</div>
+  <div class="panel-body">
+    <div style="width: 1050px">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="just-txt-div">
+            <form action="/questions" method="post">
 
-<hr>
+              <!-- category -->
+              <div class="form-group">
+                <label for="category">Category:</label>
+                <select name="category" id="category" class="form-control" required>
+                  <option value="" selected disabled>--- SELECT A CATEGORY ---</option>
+                  #foreach ($category in $categories)
+                  <option value="$category.getId()">$category.getName()</option>
+                  #end
+                </select>
+              </div>
 
-<form action="/questions" method="post">
+              <!-- question text -->
+              <div class="form-group">
+                <label for="question">Question:</label>
+                <textarea name="question" id="question" class="form-control" rows="5" required></textarea>
+              </div>
 
-  <!-- category -->
-  <div class="form-group">
-    <label for="category">Category:</label>
-    <select name="category" id="category" class="form-control" required>
-      <option value="" selected disabled>--- SELECT A CATEGORY ---</option>
-      #foreach ($category in $categories)
-        <option value="$category.getId()">$category.getName()</option>
-      #end
-    </select>
+              <!-- correct answer -->
+              <div class="form-group">
+                <label for="answer1">Correct answer:</label>
+                <input type="text" name="answer1" id="answer1" class="form-control" required>
+              </div>
+
+              <!-- incorrect answers -->
+              <div class="form-group">
+                <label for="answer2">Incorrect answers:</label>
+                <div class="row">
+                  <div class="col-md-4">
+                    <input type="text" name="answer2" id="answer2" class="form-control" required>
+                  </div>
+                  <div class="col-md-4">
+                    <input type="text" name="answer3" id="answer3" class="form-control" required>
+                  </div>
+                  <div class="col-md-4">
+                    <input type="text" name="answer4" id="answer4" class="form-control" required>
+                  </div>
+                </div>
+              </div>
+
+              <!-- difficulty -->
+              <div class="form-group">
+                <label for="difficulty">Difficulty:</label>
+                <select name="difficulty" id="difficulty" class="form-control" required>
+                  <option value="" selected disabled>--- SELECT A CATEGORY ---</option>
+                  <option value="0">Easy</option>
+                  <option value="1">Moderate</option>
+                  <option value="2">Difficult</option>
+                </select>
+
+              </div>
+
+              <!-- submit -->
+              <button class="btn btn-primary" type="submit">Add Question</button>
+            </form>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
+</div>
 
-  <!-- question text -->
-  <div class="form-group">
-    <label for="question">Question:</label>
-    <input type="text" name="question" id="question" class="form-control" required>
-  </div>
-
-  <!-- correct answer -->
-  <div class="form-group">
-    <label for="answer1">Correct answer:</label>
-    <input type="text" name="answer1" id="answer1" class="form-control" required>
-  </div>
-
-  <!-- incorrect answers -->
-  <div class="form-group">
-    <label for="answer2">Incorrect answers:</label>
-    <input type="text" name="answer2" id="answer2" class="form-control" required>
-    <input type="text" name="answer3" id="answer3" class="form-control" required>
-    <input type="text" name="answer4" id="answer4" class="form-control" required>
-  </div>
-
-  <!-- difficulty -->
-  <div class="form-group">
-    <label for="difficulty">Difficulty:</label>
-    <p>
-      <label><input type="radio" name="difficulty" value="0" required> Easy</label>
-      <br>
-      <label><input type="radio" name="difficulty" value="1" required> Moderate</label>
-      <br>
-      <label><input type="radio" name="difficulty" value="2" required> Hard</label>
-    </p>
-  </div>
-
-  <!-- submit -->
-  <button type="submit">Add Question</button>
-</form>
+<script type="text/javascript">
+window.onload = function() {
+  document.getElementById('questions').className = 'active';
+};
+</script>>

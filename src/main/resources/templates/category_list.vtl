@@ -1,2 +1,49 @@
-<h1> List of Categories </h1>
-<h2>$categories</h2>
+<div class="panel panel-default">
+  <div class="panel-heading">Add Category</div>
+  <div class="panel-body">
+    <div style="width: 1050px">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="just-txt-div">
+            <form action="/categories/add" method="post">
+
+              <div class="form-group">
+                <label for="category_name">Category Name</label>
+                <input type="text" name="category_name" id="category_name" class="form-control" required>
+              </div>
+
+              <button type="submit" class="btn btn-primary">Add Category</button>
+            </form>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<h1>Categories</h1>
+#if ($categories.size() > 0)
+<div class="row">
+  #foreach ($c in $categories)
+    <div class="col-md-3">[$velocityCount] $c.getName()
+
+      <form id="$c.getName()" method="post" action="/categories/$c.getId()/delete">
+        <a href="javascript:{}" onclick="document.getElementById('$c.getName()').submit(); return false;">Delete</a>
+      </form>
+    </div
+
+  #end
+#else
+<div class="col-md-12">
+  <p>No categories</p>
+</div>
+#end
+</div>
+
+<script type="text/javascript">
+window.onload = function() {
+  document.getElementById('categories').className = 'active';
+};
+</script>

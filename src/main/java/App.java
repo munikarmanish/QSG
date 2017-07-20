@@ -22,6 +22,11 @@ public class App {
         // Home
         get("/", (request, response) -> {
             Map<String,Object> model = new HashMap<String,Object>();
+            if (request.session().attribute("userId") == null) {
+                response.redirect("/login");
+            } else {
+                response.redirect("/admin");
+            }
             model.put("template", "templates/index.vtl");
             return new ModelAndView(model, layout);
         }, new VelocityTemplateEngine());
@@ -29,6 +34,8 @@ public class App {
         //Dashboard
         get("/admin", (request, response) -> {
             Map<String,Object> model = new HashMap<String,Object>();
+
+
             model.put("template", "templates/admin.vtl");
             return new ModelAndView(model, layout);
         }, new VelocityTemplateEngine());
@@ -117,7 +124,7 @@ public class App {
             if (request.queryParams("page") != null) {
                 page = Integer.parseInt(request.queryParams("page"));
             }
-            int start = (page - 1) * 20;
+            int start = (page - 1) * QUESTIONS_PER_PAGE;
             List<Question> questions = Question.limit(start, QUESTIONS_PER_PAGE);
 
             model.put("questions", questions);
@@ -161,14 +168,11 @@ public class App {
         }, new VelocityTemplateEngine());
 
         //  List category
-        get("/category", (request, response) -> {
+        get("/categories", (request, response) -> {
             Map<String,Object> model = new HashMap<String,Object>();
-            List<Category> categories_obj_list = new ArrayList();
-            List<String> categories_list = new ArrayList();
-            categories_obj_list = Category.all();
-            for (Category i: categories_obj_list ) {
-                categories_list.add(i.getName());
-            }
+            List<Category> categories_list = new ArrayList();
+            categories_list = Category.all();
+
             model.put("template", "templates/category_list.vtl");
             model.put("categories",categories_list);
             // System.out.println(categories_list);
@@ -176,7 +180,7 @@ public class App {
         }, new VelocityTemplateEngine());
 
         // // Category add form
-        get("/category/add", (request, response) -> {
+        get("/categories/add", (request, response) -> {
             Map<String,Object> model = new HashMap<String,Object>();
             model.put("template", "templates/category_add.vtl");
             return new ModelAndView(model, layout);
@@ -184,12 +188,20 @@ public class App {
 
 
         // // Category submit
-        post("/category/add",(request, response) -> {
+        post("/categories/add",(request, response) -> {
             String category_name = request.queryParams("category_name");
             Category obj = new Category(category_name);
             obj.save();
-            response.redirect("/category");
+            response.redirect("/categories");
             return "Success";
         });
+
+        post("/categories/:cId/delete", (request, response) ->{
+            Category category = Category.findById(Integer.parseInt(request.params(":cId")));
+            category.delete();
+            response.redirect("/categories");
+            return "Success";
+        });
+
     }
 }

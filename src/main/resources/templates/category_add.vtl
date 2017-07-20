@@ -1,15 +1,30 @@
-<h1>Add Categories</h1>
+<div class="panel panel-default">
+  <div class="panel-heading">Add Category</div>
+  <div class="panel-body">
+    <div style="width: 1050px">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="just-txt-div">
+            <form action="/categories/add" method="post">
 
-<section>
-  <form action="/category/add" method="post">
+              <div class="form-group">
+                <label for="category_name">Category Name</label>
+                <input type="text" name="category_name" id="category_name" class="form-control" required>
+              </div>
 
-    <div class="form-group">
-      <label for="category_name">Category Name</label>
-      <input type="text" name="category_name" id="category_name" class="form-control" required>
+              <button type="submit" class="btn btn-primary">Add Category</button>
+            </form>
+
+          </div>
+        </div>
+      </div>
     </div>
 
+  </div>
+</div>
 
-    <!-- action buttons -->
-    <button type="submit" class="btn btn-outline-success">Add</button>
-  </form>
-</section>
+<script type="text/javascript">
+window.onload = function() {
+  document.getElementById('categories').className = 'active';
+};
+</script>
