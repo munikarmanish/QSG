@@ -99,17 +99,16 @@ public class Question extends Timestamped {
 
     public Question save() {
         try (Connection con = DB.sql2o.open()) {
-            Integer userId = null;
-            if (this.userId > 0) {
-                userId = this.userId;
+            this.userId = (this.userId > 0)? this.userId : null;
+            String sql;
+            if (this.id > 0) {
+                sql = "UPDATE questions SET userId=:userId, categoryId=:categoryId, text=:text, difficulty=:difficulty WHERE id=:id";
+            } else {
+                sql = "INSERT INTO questions (userId, categoryId, text, difficulty)"
+                        + " VALUES (:userId, :categoryId, :text, :difficulty)";
             }
-            String sql = "INSERT INTO questions (userId, categoryId, text, difficulty)"
-                         + " VALUES (:userId, :categoryId, :text, :difficulty)";
             this.id = con.createQuery(sql, true)
-                .addParameter("userId", userId)
-                .addParameter("categoryId", this.categoryId)
-                .addParameter("text", this.text)
-                .addParameter("difficulty", this.difficulty)
+                .bind(this)
                 .executeUpdate()
                 .getKey(int.class);
             return Question.findById(this.id);
@@ -146,6 +145,20 @@ public class Question extends Timestamped {
         try (Connection con = DB.sql2o.open()) {
             String sql = "SELECT * FROM answers WHERE questionId=:id";
             return con.createQuery(sql).bind(this).executeAndFetch(Answer.class);
+        }
+    }
+
+    public Answer getCorrectAnswer() {
+        try (Connection con = DB.sql2o.open()) {
+            String q = "SELECT * FROM answers WHERE questionId=:id AND isCorrect=TRUE ORDER BY id DESC";
+            return con.createQuery(q).bind(this).executeAndFetchFirst(Answer.class);
+        }
+    }
+
+    public List<Answer> getIncorrectAnswers() {
+        try (Connection con = DB.sql2o.open()) {
+            String q = "SELECT * FROM answers WHERE questionId=:id AND isCorrect=FALSE";
+            return con.createQuery(q).bind(this).executeAndFetch(Answer.class);
         }
     }
 

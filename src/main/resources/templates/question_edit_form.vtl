@@ -1,0 +1,58 @@
+<h1>Edit Question</h1>
+
+<hr>
+
+<form action="/questions/$question.getId()/edit" method="post">
+
+  <!-- id -->
+  <input type="hidden" name="id" value="$question.getId()">
+
+  <!-- category -->
+  <div class="form-group">
+    <label for="category">Category:</label>
+    <select name="category" id="category" class="form-control" required>
+      #foreach ($category in $categories)
+        #if ($category.getId() == $question.getCategory().getId())
+          <option value="$category.getId()" selected>$category.getName()</option>
+        #else
+          <option value="$category.getId()">$category.getName()</option>
+        #end
+      #end
+    </select>
+  </div>
+
+  <!-- question text -->
+  <div class="form-group">
+    <label for="question">Question:</label>
+    <input type="text" name="question" id="question" class="form-control" required value="$question.getText()">
+  </div>
+
+  <!-- correct answer -->
+  <div class="form-group">
+    <label for="answer1">Correct answer:</label>
+    <input type="text" name="answer1" id="answer1" class="form-control" required value="$question.getCorrectAnswer().getText()">
+  </div>
+
+  <!-- incorrect answers -->
+  <div class="form-group">
+    <label for="answer2">Incorrect answers:</label>
+    <input type="text" name="answer2" id="answer2" class="form-control" required value="$question.getIncorrectAnswers().get(0).getText()">
+    <input type="text" name="answer3" id="answer3" class="form-control" required value="$question.getIncorrectAnswers().get(1).getText()">
+    <input type="text" name="answer4" id="answer4" class="form-control" required value="$question.getIncorrectAnswers().get(2).getText()">
+  </div>
+
+  <!-- difficulty -->
+  <div class="form-group">
+    <label for="difficulty">Difficulty:</label>
+    <p>
+      <label><input type="radio" name="difficulty" value="0" required #if ($question.getDifficulty() == 0) checked #end> Easy</label>
+      <br>
+      <label><input type="radio" name="difficulty" value="1" required #if ($question.getDifficulty() == 1) checked #end> Moderate</label>
+      <br>
+      <label><input type="radio" name="difficulty" value="2" required #if ($question.getDifficulty() == 2) checked #end> Hard</label>
+    </p>
+  </div>
+
+  <!-- submit -->
+  <button type="submit">Update Question</button>
+</form>

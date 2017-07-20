@@ -125,4 +125,30 @@ public class QuestionTest {
         assertTrue(Question.limit(3, 2).contains(q1));
     }
 
+    @Test
+    public void get_correct_answer() {
+        User u = new User("test").save();
+        Category c = new Category("test").save();
+        Question q = new Question(u, c, "test", 0).save();
+        q.addAnswer("a1", false);
+        q.addAnswer("a1", false);
+        q.addAnswer("a3", true);
+        q.addAnswer("a1", false);
+
+        assertEquals("a3", q.getCorrectAnswer().getText());
+    }
+
+    @Test
+    public void get_incorrect_answers() {
+        User u = new User("test").save();
+        Category c = new Category("test").save();
+        Question q = new Question(u, c, "test", 0).save();
+        q.addAnswer("a1", false);
+        q.addAnswer("a1", false);
+        q.addAnswer("a3", true);
+        q.addAnswer("a1", false);
+
+        assertEquals(3, q.getIncorrectAnswers().size());
+    }
+
 }

@@ -3,9 +3,12 @@
 #if ($questions.size() > 0)
   #foreach ($q in $questions)
     <p>[$q.getId()] $q.getText()</p>
-    <form action="/questions/$q.getId()/delete" method="post">
-      <button type="submit" class="btn danger">Delete</button>
+
+    <form action="/questions/$q.getId()/delete" method="post" class="form-inline">
+      <button type="submit" class="btn btn-danger">Delete</button>
+      <a href="/questions/$q.getId()/edit" class="btn btn-primary">Edit</a>
     </form>
+
     <ul>
       #foreach ($a in $q.getAnswers())
         #if ($a.getIsCorrect())

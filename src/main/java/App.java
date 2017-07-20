@@ -162,6 +162,54 @@ public class App {
             return 0;
         });
 
+        // edit question
+        get("/questions/:qid/edit", (request, response) -> {
+            Question question = Question
+                .findById(Integer.parseInt(request.params(":qid")));
+
+            Map<String,Object> model = new HashMap<String,Object>();
+            model.put("template", "templates/question_edit_form.vtl");
+            model.put("categories", Category.all());
+            model.put("question", question);
+            return new ModelAndView(model, layout);
+        }, new VelocityTemplateEngine());
+
+        // update question
+        post("/questions/:qid/edit", (request, response) -> {
+            Question q = Question.findById(Integer.parseInt(request.params(":qid")));
+
+            int categoryId = Integer.parseInt(request.queryParams("category"));
+            String text = request.queryParams("question");
+            String answer1 = request.queryParams("answer1");
+            String answer2 = request.queryParams("answer2");
+            String answer3 = request.queryParams("answer3");
+            String answer4 = request.queryParams("answer4");
+            int difficulty = Integer.parseInt(request.queryParams("difficulty"));
+
+            String sql;
+            try (Connection con = DB.sql2o.open()) {
+                sql = "UPDATE questions SET categoryId=:categoryId, text=:text, difficulty=:difficulty WHERE id=:id";
+                con.createQuery(sql)
+                    .addParameter("categoryId", categoryId)
+                    .addParameter("text", text)
+                    .addParameter("difficulty", difficulty)
+                    .addParameter("id", q.getId())
+                    .executeUpdate();
+            }
+
+            // delete old answers and add new answers
+            for (Answer a : q.getAnswers()) {
+                a.delete();
+            }
+            q.addAnswer(answer1, true);
+            q.addAnswer(answer1, false);
+            q.addAnswer(answer1, false);
+            q.addAnswer(answer1, false);
+
+            response.redirect("/questions/" + q.getId() + "/edit");
+            return 0;
+        });
+
         //  List category
         get("/categories", (request, response) -> {
             Map<String,Object> model = new HashMap<String,Object>();
