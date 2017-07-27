@@ -132,7 +132,7 @@ public class App {
         // List questions setwise
         get("/questions_set", (request, response) -> {
             Map<String,Object> model = new HashMap<String,Object>();
-            model.put("template", "templates/set_show.vtl");
+            model.put("template", "templates/question_sets.vtl");
             int page = 1;
             if (request.queryParams("page") != null) {
                 page = Integer.parseInt(request.queryParams("page"));
@@ -149,7 +149,7 @@ public class App {
         
 
 
-        post("/set_show", (request, response) -> {
+        post("/save_set", (request, response) -> {
         	String str = request.queryParams("questionid[]");
             int[] qids = Arrays.stream(str.substring(1, str.length()-1).split(",")).map(String::trim).mapToInt(Integer::parseInt).toArray();
         	String str1 = request.queryParams("questionnum[]");
