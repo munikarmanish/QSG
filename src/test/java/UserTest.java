@@ -68,4 +68,12 @@ public class UserTest {
         assertTrue(u.getInterviews().contains(s2));
     }
 
+    @Test
+    public void update_user_using_save() {
+        User u = new User("test").save();
+        int id = u.getId();
+        u.setName("Name");
+        u.save();
+        assertEquals("Name", User.findById(id).getName());
+    }
 }

@@ -10,6 +10,11 @@ CREATE TABLE `users` (
     `username` VARCHAR(100)  NOT NULL,
     `passwordHash` CHAR(44)  NOT NULL,
     `name` VARCHAR(100),
+    -- role:
+    --  0: examiner
+    --  1: operator
+    --  2: admin
+    `role` SMALLINT  NOT NULL  DEFAULT 0,
     -- timestamps
     `createdAt` timestamp  NOT NULL  DEFAULT current_timestamp,
     `updatedAt` timestamp  NOT NULL  DEFAULT current_timestamp  ON UPDATE current_timestamp,

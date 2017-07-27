@@ -6,20 +6,49 @@ import org.sql2o.*;
 
 public class User extends Timestamped {
 
+    // static
+
+    public static final int ROLE_EXAMINER = 0;
+    public static final int ROLE_OPERATOR = 1;
+    public static final int ROLE_ADMIN = 2;
+    public static final int DEFAULT_ROLE = ROLE_EXAMINER;
+
     // variables
 
     private String email;
     private String username;
     private String passwordHash;
     private String name;
+    private int role;
 
     // constructors
+
+    public User() {
+        // NOTHING
+    }
 
     public User(String email, String username, String password, String name) {
         this.setEmail(email);
         this.setUsername(username);
         this.setPassword(password);
         this.setName(name);
+        this.setRole(DEFAULT_ROLE);
+    }
+
+    public User(String email, String username, String password, String name, int role) {
+        this.setEmail(email);
+        this.setUsername(username);
+        this.setPassword(password);
+        this.setName(name);
+        this.setRole(role);
+    }
+
+    public User(String name, int role) {
+        this.setEmail(name + "@example.com");
+        this.setUsername(name);
+        this.setPassword(name);
+        this.setName(name);
+        this.setRole(role);
     }
 
     public User(String name) {
@@ -27,6 +56,7 @@ public class User extends Timestamped {
         this.setUsername(name);
         this.setPassword(name);
         this.setName(name);
+        this.setRole(DEFAULT_ROLE);
     }
 
     // getters and setters
@@ -35,10 +65,11 @@ public class User extends Timestamped {
         return this.email;
     }
 
-    public void setEmail(String email) {
+    public User setEmail(String email) {
         EmailValidator validator = EmailValidator.getInstance();
         if (validator.isValid(email)) {
             this.email = email;
+            return this;
         } else {
             throw new IllegalArgumentException("Invalid email");
         }
@@ -48,9 +79,10 @@ public class User extends Timestamped {
         return this.username;
     }
 
-    public void setUsername(String username) {
+    public User setUsername(String username) {
         if (username.matches("[A-Za-z0-9_.-]+")) {
             this.username = username;
+            return this;
         } else {
             throw new IllegalArgumentException("Invalid username");
         }
@@ -60,7 +92,7 @@ public class User extends Timestamped {
         return this.passwordHash;
     }
 
-    public void setPasswordHash(String passwordHash) {
+    public User setPasswordHash(String passwordHash) {
         if (!passwordHash.matches("^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$")) {
             throw new IllegalArgumentException("Invalid password hash, regex fail");
         }
@@ -68,18 +100,42 @@ public class User extends Timestamped {
             throw new IllegalArgumentException("Invalid password hash, not 44 length");
         }
         this.passwordHash = passwordHash;
+        return this;
     }
 
-    public void setPassword(String password) {
+    public User setPassword(String password) {
         this.setPasswordHash(Utils.sha256Base64(password));
+        return this;
     }
 
     public String getName() {
         return this.name;
     }
 
-    public void setName(String name) {
+    public User setName(String name) {
         this.name = name;
+        return this;
+    }
+
+    public boolean isAdmin() {
+        return this.role == ROLE_ADMIN;
+    }
+
+    public boolean isOperator() {
+        return this.role == ROLE_OPERATOR;
+    }
+
+    public boolean isExaminer() {
+        return this.role == ROLE_EXAMINER;
+    }
+
+    public int getRole() {
+        return this.role;
+    }
+
+    public User setRole(int role) {
+        this.role = role;
+        return this;
     }
 
     // operators
@@ -105,12 +161,20 @@ public class User extends Timestamped {
 
     public User save() {
         try (Connection con = DB.sql2o.open()) {
-            String sql = "INSERT INTO users (email, username, passwordHash, name)"
-                + "VALUES (:email, :username, :passwordHash, :name)";
-            this.id = con.createQuery(sql, true)
-                .bind(this)
-                .executeUpdate()
-                .getKey(int.class);
+            String sql;
+            if (this.id > 0) {
+                sql = "UPDATE users SET email=:email, passwordHash=:passwordHash, "
+                      + "username=:username, name=:name, role=:role "
+                      + "WHERE id=:id";
+                con.createQuery(sql).bind(this).executeUpdate();
+            } else {
+                sql = "INSERT INTO users (email, username, passwordHash, name, role)"
+                        + "VALUES (:email, :username, :passwordHash, :name, :role)";
+                this.id = con.createQuery(sql, true)
+                            .bind(this)
+                            .executeUpdate()
+                            .getKey(int.class);
+            }
             return User.findById(this.id);
         }
     }
