@@ -20,11 +20,15 @@ public class Interview extends Timestamped {
 
     // constructors
 
-    public Interview(User user, String title) {
-        this.setUserId(user.getId());
+    public Interview(int userId, String title, Timestamp ts, int duration) {
+        if (userId == 0) {
+            this.setUserId(0);
+        } else {
+            this.setUserId(userId);
+        }
         this.setTitle(title);
-        this.setTime(new Timestamp(new Date().getTime()));
-        this.setDuration(Interview.DEFAULT_DURATION);
+        this.setTime(ts);
+        this.setDuration(duration);
     }
 
     // getters
@@ -90,9 +94,19 @@ public class Interview extends Timestamped {
 
     public Interview save() {
         try (Connection con = DB.sql2o.open()) {
+             Integer userId = null;
+            if (this.userId > 0) {
+                userId = this.userId;
+            }
+            String sqlpre="SET FOREIGN_KEY_CHECKS = 0";
+            con.createQuery(sqlpre).executeUpdate();
             String sql = "INSERT INTO interviews (userId, title, time, duration) VALUES (:userId, :title, :time, :duration)";
-            this.id = con.createQuery(sql, true)
-                .bind(this)
+            
+                this.id = con.createQuery(sql, true)
+                .addParameter("userId", userId)
+                .addParameter("title", this.title)
+                .addParameter("time", this.time)
+                .addParameter("duration", this.duration)
                 .executeUpdate()
                 .getKey(int.class);
             return Interview.findById(this.id);

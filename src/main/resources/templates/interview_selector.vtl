@@ -1,0 +1,49 @@
+<div class="panel panel-default" style="margin-left:300px;">
+  <div class="panel-heading">CREATE ENTRANCE</div>
+  <div class="panel-body">
+    <div style="width:300px;">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="just-txt-div">
+            <form action="/interview_selector" method="post">
+         
+              <div class="form-group">
+                <label for="title">Title</label>
+                <input type="text" name="title" id="title" class="form-control" placeholder="Java Interview" required>
+              </div>
+
+              
+              <div class="form-group">
+                <label for="duration">Duration</label>
+                <input type="number" name="duration" id="duration" class="form-control"  placeholder="60" required>
+              </div>
+
+            
+              <div class="form-group">
+                <label for="time">Time</label>
+                <input type="datetime-local" name="time" id="time" class="form-control">
+              </div>
+
+              <div class="form-group">
+                <label for="difficulty">Difficulty</label>
+                <input type="number" name="difficulty" id="difficulty" class="form-control"  placeholder="1/2/3" required>
+              </div>
+
+              <div class="form-group">
+                <label for="category">Category</label>
+                <input type="text" name="category" id="category" class="form-control"  placeholder="animals" required>
+              </div>
+
+              <!-- action buttons -->
+              <button type="submit" class="btn btn-primary btn-outline-success">Create</button>
+            </form>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+
+  <!--SET-DIV SECTION END-->

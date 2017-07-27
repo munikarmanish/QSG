@@ -37,6 +37,7 @@ public class Set extends Timestamped {
         return this.set;
     }
 
+
     // setters
 
     public Set setInterviewId(int id) {
@@ -48,6 +49,8 @@ public class Set extends Timestamped {
         this.set = set;
         return this;
     }
+
+
 
     // operators
 
@@ -64,6 +67,8 @@ public class Set extends Timestamped {
 
     public Set save() {
         try (Connection con = DB.sql2o.open()) {
+            String sqlpre="SET FOREIGN_KEY_CHECKS = 0";
+            con.createQuery(sqlpre).executeUpdate();
             String sql = "INSERT INTO sets (interviewId, `set`)"
                 + " VALUES (:interviewId, :set)";
             this.id = con.createQuery(sql).bind(this).executeUpdate().getKey(int.class);
@@ -90,6 +95,30 @@ public class Set extends Timestamped {
                 .addParameter("correctIndex", correctIndex)
                 .executeUpdate();
             return this;
+
+        }
+    }
+    public static int saveSet(int setId, int questionId, int questionNumber, int correctIndex) {
+        try (Connection con = DB.sql2o.open()) {
+            String sqlpre="SET FOREIGN_KEY_CHECKS = 0";
+            con.createQuery(sqlpre).executeUpdate();
+            String sql = "INSERT INTO sets_questions (setId, questionId, questionNumber, correctIndex)"
+                + "VALUES (:setId, :questionId, :questionNumber, :correctIndex)";
+            con.createQuery(sql)
+                .addParameter("setId", setId)
+                .addParameter("questionId", questionId)
+                .addParameter("questionNumber", questionNumber)
+                .addParameter("correctIndex", correctIndex)
+                .executeUpdate();
+            
+             return 0;
+                        }
+    }
+     public static Integer getsetId() {
+        try (Connection con = DB.sql2o.open()) {
+            String sql = "SELECT MAX(id) FROM sets";
+            return con.createQuery(sql)
+            .executeScalar(Integer.class);     
         }
     }
 
@@ -129,4 +158,5 @@ public class Set extends Timestamped {
                 .executeAndFetchFirst(Set.class);
         }
     }
+    
 }

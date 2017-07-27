@@ -39,7 +39,7 @@ CREATE TABLE `questions` (
     `id` INTEGER  AUTO_INCREMENT  NOT NULL,
     `userId` INTEGER,
     `categoryId` INTEGER,
-    `text` VARCHAR(255)  NOT NULL,
+    `text` VARCHAR(1000)  NOT NULL,
     -- difficulty:
     --   0 - Easy
     --   1 - Medium
@@ -60,7 +60,7 @@ CREATE TABLE `answers` (
     -- fields
     `id` INTEGER  AUTO_INCREMENT  NOT NULL,
     `questionId` INTEGER  NOT NULL,
-    `text` VARCHAR(255)  NOT NULL,
+    `text` VARCHAR(1000)  NOT NULL,
     `isCorrect` BOOLEAN  NOT NULL  DEFAULT FALSE,
     -- timestamps
     `createdAt` timestamp  NOT NULL  DEFAULT current_timestamp,

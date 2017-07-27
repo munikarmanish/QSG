@@ -11,6 +11,8 @@ import java.sql.Timestamp;
 import java.util.Date;
 import java.time.LocalDate;
 import java.text.DateFormat;
+import java.util.Random;
+import java.util.Arrays;
 
 
 public class App {
@@ -130,19 +132,38 @@ public class App {
         // List questions setwise
         get("/questions_set", (request, response) -> {
             Map<String,Object> model = new HashMap<String,Object>();
-            model.put("template", "templates/question_list.vtl");
+            model.put("template", "templates/set_show_trail.vtl");
             int page = 1;
             if (request.queryParams("page") != null) {
                 page = Integer.parseInt(request.queryParams("page"));
             }
-            int start = (page - 1) * 20;
-            List<Question> questions = Question.limit(start, QUESTIONS_PER_PAGE);
+            int difficulty = Integer.parseInt(request.queryParams("difficulty"));
+            int duration = Integer.parseInt(request.queryParams("duration"));
+            List<Question> questions = Question.limitset(duration, difficulty);
             model.put("questions", questions);
             model.put("currentPage", page);
             model.put("prevPage", page-1);
             model.put("nextPage", page+1);
             return new ModelAndView(model, layout);
         }, new VelocityTemplateEngine());
+        
+
+
+        post("/set_show", (request, response) -> {
+        	String str = request.queryParams("questionid[]");
+            int[] qids = Arrays.stream(str.substring(1, str.length()-1).split(",")).map(String::trim).mapToInt(Integer::parseInt).toArray();
+        	String str1 = request.queryParams("questionnum[]");
+            int[] qnums = Arrays.stream(str1.substring(1, str1.length()-1).split(",")).map(String::trim).mapToInt(Integer::parseInt).toArray();
+        	int len = qids.length;
+            for(int z=0; z<len; z++)
+            {
+            Random ran = new Random();
+            int x = 1+ ran.nextInt((500-1)+1); //randomNum = minimum + rand.nextInt((maximum - minimum) + 1);
+            Set.saveSet(x, qids[z], qnums[z], 1 ); //(setId, questionId, questionNumber, correctIndex)
+            }
+            response.redirect("/interview_selector");
+            return 0;
+        });
 
 
         // Add question
@@ -179,7 +200,7 @@ public class App {
             model.put("template", "templates/interview_selector.vtl");
             return new ModelAndView(model, layout);
         }, new VelocityTemplateEngine());
-        //interview selector post method
+       
         
         post("/interview_selector", (request, response) -> {       
             String title= request.queryParams("title");
@@ -194,11 +215,17 @@ public class App {
             String category = request.queryParams("category");
             int m=1;
             Interview i = new Interview(0, title, ts, duration).save(); //userid is 0 for now
-            Set s = new Set(i,m).save();
+            for(int sn=1; sn<=3; sn++)
+        	{
+        	Set s = new Set(2,sn).save(); 
+        	}//Set(int interviewId, int set)
+        	int newid= Set.getsetId();
             if (i == null) {
                 response.redirect("/message?m=ERROR");
             }
-            response.redirect("/questions");
+            String address="/questions_set?difficulty="+ difficulty +"&duration="+ duration+"&setId="+ newid;
+           // response.redirect("/questions_set?difficulty=1&duration=50");
+            response.redirect(address);
             Map<String,Object> model = new HashMap<String,Object>();
             return new ModelAndView(model, layout_signinup);
         }, new VelocityTemplateEngine());

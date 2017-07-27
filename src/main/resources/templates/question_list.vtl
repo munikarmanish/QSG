@@ -1,0 +1,26 @@
+<h1>Questions</h1>
+
+#if ($questions.size() > 0)
+  #foreach ($q in $questions)
+    <p>[$q.getId()] $q.getText()</p>
+    <ul>
+      #foreach ($a in $q.getAnswers())
+        #if ($a.getIsCorrect())
+          <li><em>$a.getText()</em></li>
+        #else
+          <li>$a.getText()</li>
+        #end
+      #end
+    </ul>
+  #end
+#else
+  <p>No questions</p>
+#end
+
+<!-- pagination -->
+#if ($prevPage > 0)
+  <a href="?page=$prevPage">Previous</a>
+#end
+
+Page $currentPage
+<a href="?page=$nextPage">Next</a>
