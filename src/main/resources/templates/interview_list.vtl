@@ -1,0 +1,29 @@
+<h1>Interviews</h1>
+#if ($interviews.size() > 0)
+  <div class="row">
+  #foreach ($i in $interviews)
+    <div class="col-md-3">&nbsp;&nbsp;[$velocityCount] $i.getTitle()
+      <form id="$i.getTitle()" method="post" action="/interviews/$i.getId()/delete">
+        <a href="javascript:{}" onclick="document.getElementById('$i.getTitle()').submit(); return false;">Delete</a>
+      </form>
+    </div><!--col-->
+  #end
+  </div><!--row-->
+#else
+  <div class="row">
+    <div class="col-md-12">
+      <p>No interviews</p>
+    </div>
+  </div><!--row-->
+#end
+<script type="text/javascript">
+window.onload = function() {
+  document.getElementById('interviews').className = 'active';
+};
+</script>
+
+          <br/><br><br><h3> Create new interview </h3>
+            <form action="/interview_selector" method="get">
+              <button type="submit" class="btn btn-primary">Create</button>
+            </form>
+

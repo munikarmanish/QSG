@@ -132,7 +132,7 @@ public class App {
         // List questions setwise
         get("/questions_set", (request, response) -> {
             Map<String,Object> model = new HashMap<String,Object>();
-            model.put("template", "templates/set_show_trail.vtl");
+            model.put("template", "templates/set_show.vtl");
             int page = 1;
             if (request.queryParams("page") != null) {
                 page = Integer.parseInt(request.queryParams("page"));
@@ -233,36 +233,46 @@ public class App {
             return new ModelAndView(model, layout_signinup);
         }, new VelocityTemplateEngine());
 
+        //  List interview
+        get("/interviews", (request, response) -> {
+            Map<String,Object> model = new HashMap<String,Object>();Interview.all();
+            model.put("template", "templates/interview_list.vtl");
+            model.put("interviews", Interview.all());
+            return new ModelAndView(model, layout);
+        }, new VelocityTemplateEngine());
 
-        //  List category
+
+        //delete interview
+        post("/interviews/:iId/delete", (request, response) ->{
+            Interview interview = Interview.findById(Integer.parseInt(request.params(":iId")));
+            interview.delete();
+            response.redirect("/interviews");
+            return "Success";
+        });    
+
+
+
+      //  List category
         get("/categories", (request, response) -> {
-            Map<String,Object> model = new HashMap<String,Object>();
-            List<Category> categories_obj_list = new ArrayList();
-            List<String> categories_list = new ArrayList();
-            categories_obj_list = Category.all();
-            for (Category i: categories_obj_list ) {
-                categories_list.add(i.getName());
-            }
+            Map<String,Object> model = new HashMap<String,Object>();Category.all();
             model.put("template", "templates/category_list.vtl");
-            model.put("categories", categories_list);
+            model.put("categories", Category.all());
             // System.out.println(categories_list);
             return new ModelAndView(model, layout);
         }, new VelocityTemplateEngine());
 
-        // // Category add form
-        get("/categories/add", (request, response) -> {
-            Map<String,Object> model = new HashMap<String,Object>();
-            model.put("template", "templates/category_add.vtl");
-            return new ModelAndView(model, layout);
-        }, new VelocityTemplateEngine());
-
-
         // // Category submit
-        post("/categories", (request, response) -> {
+        post("/categories",(request, response) -> {
             String category_name = request.queryParams("category_name");
-            Category obj = new Category(category_name).save();
+            Category c = new Category(category_name).save();
             response.redirect("/categories");
-            return 0;
+            return "Success";
         });
-    }
+
+        post("/categories/:cId/delete", (request, response) ->{
+            Category category = Category.findById(Integer.parseInt(request.params(":cId")));
+            category.delete();
+            response.redirect("/categories");
+            return "Success";
+        });    }
 }

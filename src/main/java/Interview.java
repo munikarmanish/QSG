@@ -127,6 +127,7 @@ public class Interview extends Timestamped {
             this.setId(0);
         }
     }
+    
 
     // relations lookup
 
@@ -163,4 +164,4 @@ public class Interview extends Timestamped {
                 .executeAndFetchFirst(Interview.class);
         }
     }
-}
+    }

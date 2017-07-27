@@ -7,8 +7,9 @@
  #set($nq= ($questions.size()+1) /3 )
  #end
  #set($i=0)
- 
- 
+ #set($qid= [])
+ #set($qnum= [])
+
   #foreach($set in [1..3])
     <p> Set $set </p>
       #set($cntq=0)
@@ -18,8 +19,11 @@
         #if($cntq < $nq) 
         #set($i=$mathTool.random(1,$questions.size))
         #set($q= $questions[$i])
-        ##<p>[$q.getId()] $q.getText()</p>**
+        #if($qid.add($q.getId()))#end
+                          ##set($qid[$i]= $q.getId())**
+                          ##<p>[$q.getId()] $q.getText()</p>**
         <p>[$j] $q.getText()</p>
+        #if($qnum.add($j))#end
         <ul>
         #foreach ($a in $q.getAnswers())
           #if ($a.getIsCorrect())
@@ -50,7 +54,8 @@
 #end
 
 <form action="/set_show" method="post">
+ <input type="hidden" name="questionid[]" value="$qid">
+ <input type="hidden" name="questionnum[]" value="$qnum">
 
-              <button type="submit" class="btn btn-primary btn-outline-success">Save</button>
-              <input type="hidden" name="" id="" class="form-control">      
+ <button type="submit" class="btn btn-primary btn-outline-success">Save</button>                 
 </form>
