@@ -155,11 +155,15 @@ public class App {
         	String str1 = request.queryParams("questionnum[]");
             int[] qnums = Arrays.stream(str1.substring(1, str1.length()-1).split(",")).map(String::trim).mapToInt(Integer::parseInt).toArray();
         	int len = qids.length;
-            for(int z=0; z<len; z++)
+        	int newid= Set.getsetId();
+            newid=newid-2; 
+        	for (int y=0; y<3;y++) 
+        	{
+            for(int z=0; z<len; z++) 
             {
-            Random ran = new Random();
-            int x = 1+ ran.nextInt((500-1)+1); //randomNum = minimum + rand.nextInt((maximum - minimum) + 1);
-            Set.saveSet(x, qids[z], qnums[z], 1 ); //(setId, questionId, questionNumber, correctIndex)
+            Set.saveSet(newid, qids[z], qnums[z], 1 ); //(setId, questionId, questionNumber, correctIndex)
+            }
+            ++newid;
             }
             response.redirect("/interview_selector");
             return 0;
@@ -213,18 +217,17 @@ public class App {
             int difficulty = Integer.parseInt(request.queryParams("difficulty"));
             int duration = Integer.parseInt(request.queryParams("duration"));
             String category = request.queryParams("category");
-            int m=1;
             Interview i = new Interview(0, title, ts, duration).save(); //userid is 0 for now
             for(int sn=1; sn<=3; sn++)
         	{
-        	Set s = new Set(2,sn).save(); 
-        	}//Set(int interviewId, int set)
+            int intervid= Interview.getinterviewId();
+        	Set s = new Set(intervid,sn).save(); //Set(int interviewId, int set)
+        	}
         	int newid= Set.getsetId();
             if (i == null) {
                 response.redirect("/message?m=ERROR");
             }
             String address="/questions_set?difficulty="+ difficulty +"&duration="+ duration+"&setId="+ newid;
-           // response.redirect("/questions_set?difficulty=1&duration=50");
             response.redirect(address);
             Map<String,Object> model = new HashMap<String,Object>();
             return new ModelAndView(model, layout_signinup);

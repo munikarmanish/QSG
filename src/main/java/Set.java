@@ -1,3 +1,4 @@
+
 import java.util.Date;
 import java.util.List;
 import java.sql.Timestamp;
@@ -71,6 +72,7 @@ public class Set extends Timestamped {
             con.createQuery(sqlpre).executeUpdate();
             String sql = "INSERT INTO sets (interviewId, `set`)"
                 + " VALUES (:interviewId, :set)";
+            //String sqlpost="SELECT LAST_INSERT_ID() FROM sets";
             this.id = con.createQuery(sql).bind(this).executeUpdate().getKey(int.class);
             return Set.findById(this.id);
         }

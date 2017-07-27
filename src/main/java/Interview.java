@@ -75,6 +75,13 @@ public class Interview extends Timestamped {
         this.duration = duration;
         return this;
     }
+    public static Integer getinterviewId() {
+        try (Connection con = DB.sql2o.open()) {
+            String sql = "SELECT MAX(id) FROM interviews";
+            return con.createQuery(sql)
+            .executeScalar(Integer.class);     
+        }
+    }
 
     // operators
 
