@@ -1,6 +1,6 @@
 import java.sql.Timestamp;
 import org.apache.commons.validator.routines.EmailValidator;
-import java.util.List;
+import java.util.*;
 import org.sql2o.*;
 
 
@@ -11,6 +11,8 @@ public class Question extends Timestamped {
     public static final int DIFFICULTY_EASY = 0;
     public static final int DIFFICULTY_MEDIUM = 1;
     public static final int DIFFICULTY_HARD = 2;
+
+    public static final Integer DEFAULT_DIFFICULTY = 1;
 
     // variables
 
@@ -170,6 +172,27 @@ public class Question extends Timestamped {
             String q = "SELECT * FROM answers WHERE questionId=:id AND isCorrect=FALSE";
             return con.createQuery(q).bind(this).executeAndFetch(Answer.class);
         }
+    }
+
+    public List<Answer> getOrderedAnswers(Set set) {
+        Integer correctIndex = 0;
+        try (Connection con = DB.sql2o.open()) {
+            String sql = "SELECT correctIndex from sets_questions WHERE setId=:setId AND questionId=:questionId";
+            correctIndex = con.createQuery(sql)
+                    .addParameter("setId", set.getId())
+                    .addParameter("questionId", this.id)
+                    .executeAndFetchFirst(Integer.class);
+        }
+
+        List<Answer> incorrectAnswers = this.getIncorrectAnswers();
+        Answer correctAnswer = this.getCorrectAnswer();
+
+        Answer[] orderedAnswers = new Answer[4];
+        orderedAnswers[correctIndex] = correctAnswer;
+        orderedAnswers[(correctIndex+1) % 4] = incorrectAnswers.remove(0);
+        orderedAnswers[(correctIndex+2) % 4] = incorrectAnswers.remove(0);
+        orderedAnswers[(correctIndex+3) % 4] = incorrectAnswers.remove(0);
+        return Arrays.asList(orderedAnswers);
     }
 
     public Question addAnswer(String text, boolean isCorrect) {

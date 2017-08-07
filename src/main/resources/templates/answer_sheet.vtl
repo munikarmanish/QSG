@@ -1,0 +1,17 @@
+<ol>
+#foreach ($i in $set.getCorrectIndices())
+
+  <li>
+    #if( $i == 0 )
+      (a)
+    #elseif( $i == 1 )
+      (b)
+    #elseif( $i == 2 )
+      (c)
+    #else
+      (d)
+    #end
+  </li>
+
+#end
+</ol>

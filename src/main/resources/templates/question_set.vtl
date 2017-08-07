@@ -1,0 +1,20 @@
+<p>
+  <a href="/exams/$exam.getId()/$set.getSet()/solution" class="btn btn-primary">Answer Sheet</a>
+</p>
+
+<ol>
+#foreach ($q in $set.getQuestions())
+
+  <li>
+    $q.getText()
+
+    <ol type="a">
+      <li>$q.getOrderedAnswers($set).get(0).getText()</li>
+      <li>$q.getOrderedAnswers($set).get(1).getText()</li>
+      <li>$q.getOrderedAnswers($set).get(2).getText()</li>
+      <li>$q.getOrderedAnswers($set).get(3).getText()</li>
+    </ol>
+  </li>
+
+#end
+</ol>

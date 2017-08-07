@@ -1,0 +1,42 @@
+<h1>Exam List</h1>
+
+<p>
+  <a href="/exams/add" class="btn btn-primary">Create Exam</a>
+</p>
+
+<hr>
+
+#if ($exams.size() > 0)
+
+<table border="1" cellpadding="5">
+  <thead>
+    <tr>
+      <th>Date and Time</th>
+      <th>Exam title</th>
+      <th>Difficulty</th>
+      <th>Duration</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    #foreach ($exam in $exams)
+      <tr>
+        <td>$exam.getTime()</td>
+        <td><a href="/exams/$exam.getId()">$exam.getTitle()</a></td>
+        <td>$exam.getDifficultyString()</td>
+        <td>$exam.getDuration()</td>
+        <td>
+          <form action="/exams/$exam.getId()/delete" method="post">
+            <button type="submit" class="btn btn-danger">Delete</button>
+          </form>
+        </td>
+      </tr>
+    #end
+  </tbody>
+</table>
+
+#else
+
+<p>No exams created yet.</p>
+
+#end

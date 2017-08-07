@@ -1,0 +1,44 @@
+<h1>Add Exam</h1>
+
+<div>
+  <form class="" action="/exams" method="post">
+
+    <p>
+      Exam title:
+      <input type="text" name="title" required>
+    </p>
+
+    <p>
+      Exam time:
+      <input type="datetime-local" name="time" required>
+    </p>
+
+    <p>
+      Exam duration (in minutes):
+      <input type="number" name="duration" min="15" max="180" required>
+    </p>
+
+    <p>
+      Exam difficulty:
+      <select name="difficulty" required>
+        <option value="0">Easy</option>
+        <option value="1" selected>Medium</option>
+        <option value="2">Hard</option>
+      </select>
+    </p>
+
+    <p>
+      Categories:
+      <select name="categories" multiple required>
+        #foreach ($c in $categories)
+          <option value="$c.getId()">$c.getName()</option>
+        #end
+      </select>
+    </p>
+
+    <p>
+      <button type="submit">Add Exam</button>
+    </p>
+
+  </form>
+</div>

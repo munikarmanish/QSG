@@ -84,6 +84,11 @@ CREATE TABLE `exams` (
     `title` VARCHAR(255)  NOT NULL,
     `time` TIMESTAMP  NOT NULL  DEFAULT current_timestamp,   -- date & time of exam
     `duration` INTEGER  NOT NULL  DEFAULT 30, -- in minutes
+    -- difficulty:
+    --   0 - Easy
+    --   1 - Medium
+    --   2 - Hard
+    `difficulty` SMALLINT  NOT NULL  DEFAULT 0,
     `userId` INTEGER,
     -- timestamps
     `createdAt` timestamp  NOT NULL  DEFAULT current_timestamp,

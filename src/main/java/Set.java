@@ -113,6 +113,15 @@ public class Set extends Timestamped {
         }
     }
 
+    public List<Integer> getCorrectIndices() {
+        try (Connection con = DB.sql2o.open();) {
+            String sql = "SELECT correctIndex FROM sets_questions WHERE setId=:id ORDER BY questionNumber ASC";
+            return con.createQuery(sql)
+                    .bind(this)
+                    .executeAndFetch(Integer.class);
+        }
+    }
+
     // static methods
 
     public static List<Set> all() {

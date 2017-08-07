@@ -122,11 +122,11 @@ public class User extends Timestamped {
     }
 
     public boolean isOperator() {
-        return this.role == ROLE_OPERATOR;
+        return (this.role == ROLE_OPERATOR || this.role == ROLE_ADMIN);
     }
 
     public boolean isExaminer() {
-        return this.role == ROLE_EXAMINER;
+        return (this.role == ROLE_EXAMINER || this.role == ROLE_ADMIN);
     }
 
     public int getRole() {
