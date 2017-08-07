@@ -422,9 +422,9 @@ public class App {
 
             Random random = new Random();
             for (int i = 1; i <= count_per_set; i++) {
-                set1.addQuestion(set1_questions.get(i), i, random.nextInt(4));
-                set2.addQuestion(set2_questions.get(i), i, random.nextInt(4));
-                set3.addQuestion(set3_questions.get(i), i, random.nextInt(4));
+                set1.addQuestion(set1_questions.get(i-1), i, random.nextInt(4));
+                set2.addQuestion(set2_questions.get(i-1), i, random.nextInt(4));
+                set3.addQuestion(set3_questions.get(i-1), i, random.nextInt(4));
             }
 
             response.redirect("/exams/" + e.getId());
@@ -456,6 +456,9 @@ public class App {
             Map<String,Object> model = new HashMap<String,Object>();
             Integer examId = Integer.parseInt(request.params("id"));
             Integer setNumber = Integer.parseInt(request.params("set"));
+            if (setNumber < 1 || setNumber > 3) {
+                response.redirect("/message?m=INVALID+SET+NUMBER");
+            }
             Exam exam = Exam.findById(examId);
             Set set = exam.getSets().get(setNumber-1);
 
