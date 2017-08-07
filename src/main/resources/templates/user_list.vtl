@@ -1,0 +1,22 @@
+<h1>Users</h1>
+
+<table border="1">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Username</th>
+      <th>Email</th>
+      <th>Role</th>
+    </tr>
+  </thead>
+  <tbody>
+    #foreach ($user in $users)
+      <tr>
+        <td>$user.getName()</td>
+        <td>$user.getUsername()</td>
+        <td>$user.getEmail()</td>
+        <td>$user.getRole()</td>
+      </tr>
+    #end
+  </tbody>
+</table>

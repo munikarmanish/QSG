@@ -34,8 +34,6 @@ public class App {
         //Dashboard
         get("/admin", (request, response) -> {
             Map<String,Object> model = new HashMap<String,Object>();
-
-
             model.put("template", "templates/admin.vtl");
             return new ModelAndView(model, layout);
         }, new VelocityTemplateEngine());
@@ -194,7 +192,7 @@ public class App {
             int difficulty = Integer.parseInt(request.queryParams("difficulty"));
 
             String sql;
-            try (Connection con = DB.sql2o.open()) {
+            try (Connection con = DB.sql2o.open();) {
                 sql = "UPDATE questions SET categoryId=:categoryId, text=:text, difficulty=:difficulty WHERE id=:id";
                 con.createQuery(sql)
                     .addParameter("categoryId", categoryId)
@@ -226,7 +224,7 @@ public class App {
             return new ModelAndView(model, layout);
         }, new VelocityTemplateEngine());
 
-        // // Category submit
+        // Category submit
         post("/categories",(request, response) -> {
             String category_name = request.queryParams("category_name");
             Category c = new Category(category_name).save();
@@ -240,6 +238,58 @@ public class App {
             response.redirect("/categories");
             return "Success";
         });
+
+        // User add
+
+        get("/users/add", (request, response) -> {
+            Map<String,Object> model = new HashMap<String,Object>();
+            Integer userId = request.session().attribute("userId");
+            if (userId == null || !User.findById(userId).isAdmin()) {
+                model.put("template", "templates/404.vtl");
+                return new ModelAndView(model, layout);
+            }
+            model.put("template", "templates/user_add_form.vtl");
+            return new ModelAndView(model, layout);
+        }, new VelocityTemplateEngine());
+
+        post("/users", (request, response) -> {
+            Map<String,Object> model = new HashMap<String,Object>();
+            Integer userId = request.session().attribute("userId");
+            if (userId == null || !User.findById(userId).isAdmin()) {
+                model.put("template", "templates/404.vtl");
+                return new ModelAndView(model, layout);
+            }
+
+            int role = Integer.parseInt(request.queryParams("role"));
+            String name = request.queryParams("name");
+            String username = request.queryParams("username");
+            String email = request.queryParams("email");
+            String password = request.queryParams("password");
+
+            try {
+                User u = new User(email, username, password, name, role).save();
+                response.redirect("/users");
+            } catch (Exception e) {
+                model.put("template", "templates/message.vtl");
+                model.put("message", "ERROR CREATING USER");
+                e.printStackTrace();
+                return new ModelAndView(model, layout);
+            }
+
+            return 0;
+        });
+
+        get("/users", (request, response) -> {
+            Map<String,Object> model = new HashMap<String,Object>();
+            Integer userId = request.session().attribute("userId");
+            if (userId == null || !User.findById(userId).isAdmin()) {
+                model.put("template", "templates/404.vtl");
+                return new ModelAndView(model, layout);
+            }
+            model.put("template", "templates/user_list.vtl");
+            model.put("users", User.all());
+            return new ModelAndView(model, layout);
+        }, new VelocityTemplateEngine());
 
     }
 }

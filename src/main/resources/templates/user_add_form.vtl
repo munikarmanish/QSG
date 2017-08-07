@@ -1,0 +1,36 @@
+<h1>Add User</h1>
+
+<form action="/users" method="post">
+  <p>
+    Role:
+    <select name="role">
+      <option value="0" selected>Examiner</option>
+      <option value="1">Operator</option>
+      <option value="2">Admin</option>
+    </select>
+  </p>
+
+  <p>
+    Name:
+    <input type="text" name="name" required>
+  </p>
+
+  <p>
+    Username:
+    <input type="text" name="username" required>
+  </p>
+
+  <p>
+    Email:
+    <input type="email" name="email" required>
+  </p>
+
+  <p>
+    Password:
+    <input type="password" name="password" required>
+  </p>
+
+  <p>
+    <button type="submit">Submit</button>
+  </p>
+</form>
