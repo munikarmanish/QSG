@@ -87,7 +87,7 @@ public class QuestionTest {
     @Test
     public void getSets() {
         User u = new User("test").save();
-        Interview i = new Interview(u, "test").save();
+        Exam i = new Exam(u, "test").save();
         Category c = new Category("test").save();
         Set s1 = new Set(i, 1).save();
         Set s2 = new Set(i, 2).save();

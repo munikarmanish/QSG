@@ -58,14 +58,14 @@ public class UserTest {
     }
 
     @Test
-    public void get_all_interviews() {
+    public void get_all_exams() {
         User u = new User("test").save();
-        Interview s1 = new Interview(u, "test").save();
-        Interview s2 = new Interview(u, "test").save();
+        Exam s1 = new Exam(u, "test").save();
+        Exam s2 = new Exam(u, "test").save();
 
-        assertEquals(2, u.getInterviews().size());
-        assertTrue(u.getInterviews().contains(s1));
-        assertTrue(u.getInterviews().contains(s2));
+        assertEquals(2, u.getExams().size());
+        assertTrue(u.getExams().contains(s1));
+        assertTrue(u.getExams().contains(s2));
     }
 
     @Test

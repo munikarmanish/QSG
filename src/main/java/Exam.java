@@ -5,14 +5,14 @@ import java.util.Date;
 import org.sql2o.*;
 
 
-public class Interview extends Timestamped {
+public class Exam extends Timestamped {
 
     // variables
 
     private String title;
-    private int userId;
+    private Integer userId;
     private Timestamp time;
-    private int duration;
+    private Integer duration;
 
     // static variables
 
@@ -20,11 +20,11 @@ public class Interview extends Timestamped {
 
     // constructors
 
-    public Interview(User user, String title) {
+    public Exam(User user, String title) {
         this.setUserId(user.getId());
         this.setTitle(title);
         this.setTime(new Timestamp(new Date().getTime()));
-        this.setDuration(Interview.DEFAULT_DURATION);
+        this.setDuration(Exam.DEFAULT_DURATION);
     }
 
     // getters
@@ -47,27 +47,27 @@ public class Interview extends Timestamped {
 
     // setters
 
-    public Interview setTitle(String title) {
+    public Exam setTitle(String title) {
         this.title = title;
         return this;
     }
 
-    public Interview setUserId(int id) {
+    public Exam setUserId(int id) {
         this.userId = id;
         return this;
     }
 
-    public Interview setTime(Timestamp time) {
+    public Exam setTime(Timestamp time) {
         this.time = time;
         return this;
     }
 
-    public Interview setTime(String timeString) {
+    public Exam setTime(String timeString) {
         this.time = Timestamp.valueOf(timeString);
         return this;
     }
 
-    public Interview setDuration(int duration) {
+    public Exam setDuration(int duration) {
         this.duration = duration;
         return this;
     }
@@ -76,10 +76,10 @@ public class Interview extends Timestamped {
 
     @Override
     public boolean equals(Object obj) {
-        if (! (obj instanceof Interview)) {
+        if (! (obj instanceof Exam)) {
             return false;
         }
-        Interview i = (Interview) obj;
+        Exam i = (Exam) obj;
         return this.title.equals(i.getTitle()) &&
             this.id == i.getId() &&
             this.time.equals(i.getTime()) &&
@@ -88,20 +88,20 @@ public class Interview extends Timestamped {
 
     // methods
 
-    public Interview save() {
+    public Exam save() {
         try (Connection con = DB.sql2o.open()) {
-            String sql = "INSERT INTO interviews (userId, title, time, duration) VALUES (:userId, :title, :time, :duration)";
+            String sql = "INSERT INTO exams (userId, title, time, duration) VALUES (:userId, :title, :time, :duration)";
             this.id = con.createQuery(sql, true)
                 .bind(this)
                 .executeUpdate()
-                .getKey(int.class);
-            return Interview.findById(this.id);
+                .getKey(Integer.class);
+            return Exam.findById(this.id);
         }
     }
 
     public void delete() {
         try (Connection con = DB.sql2o.open()) {
-            String sql = "DELETE FROM interviews WHERE id=:id";
+            String sql = "DELETE FROM exams WHERE id=:id";
             con.createQuery(sql).bind(this).executeUpdate();
             this.setId(0);
         }
@@ -119,7 +119,7 @@ public class Interview extends Timestamped {
 
     public List<Set> getSets() {
         try (Connection con = DB.sql2o.open()) {
-            return con.createQuery("SELECT * FROM sets WHERE interviewId=:id")
+            return con.createQuery("SELECT * FROM sets WHERE ExamId=:id")
                 .bind(this)
                 .executeAndFetch(Set.class);
         }
@@ -127,19 +127,19 @@ public class Interview extends Timestamped {
 
     // static methods
 
-    public static List<Interview> all() {
+    public static List<Exam> all() {
         try (Connection con = DB.sql2o.open()) {
-            String sql = "SELECT * FROM interviews ORDER BY id DESC";
-            return con.createQuery(sql).executeAndFetch(Interview.class);
+            String sql = "SELECT * FROM exams ORDER BY id DESC";
+            return con.createQuery(sql).executeAndFetch(Exam.class);
         }
     }
 
-    public static Interview findById(int id) {
+    public static Exam findById(int id) {
         try (Connection con = DB.sql2o.open()) {
-            String sql = "SELECT * FROM interviews WHERE id=:id";
+            String sql = "SELECT * FROM exams WHERE id=:id";
             return con.createQuery(sql)
                 .addParameter("id", id)
-                .executeAndFetchFirst(Interview.class);
+                .executeAndFetchFirst(Exam.class);
         }
     }
 }

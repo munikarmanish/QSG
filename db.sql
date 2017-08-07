@@ -76,9 +76,9 @@ CREATE TABLE `answers` (
 );
 
 
--- Interview
-DROP TABLE IF EXISTS `interviews` CASCADE;
-CREATE TABLE `interviews` (
+-- exams
+DROP TABLE IF EXISTS `exams` CASCADE;
+CREATE TABLE `exams` (
     -- fields
     `id` INTEGER  AUTO_INCREMENT  NOT NULL,
     `title` VARCHAR(255)  NOT NULL,
@@ -98,15 +98,15 @@ DROP TABLE IF EXISTS `sets` CASCADE;
 CREATE TABLE `sets` (
     -- fields
     `id` INTEGER  AUTO_INCREMENT  NOT NULL,
-    `interviewId` INTEGER,
+    `examId` INTEGER,
     `set` SMALLINT  NOT NULL  DEFAULT 1,
     -- timestamps
     `createdAt` timestamp  NOT NULL  DEFAULT current_timestamp,
     `updatedAt` timestamp  NOT NULL  DEFAULT current_timestamp  ON UPDATE current_timestamp,
     -- constraints
     PRIMARY KEY (`id`),
-    FOREIGN KEY (`interviewId`) REFERENCES `interviews`(`id`)  ON DELETE SET NULL,
-    UNIQUE (`interviewId`, `set`)
+    FOREIGN KEY (`examId`) REFERENCES `exams`(`id`)  ON DELETE SET NULL,
+    UNIQUE (`examId`, `set`)
 );
 
 -- Set Question many-many relation

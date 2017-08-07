@@ -8,7 +8,7 @@ public class Set extends Timestamped {
 
     // variables
 
-    private int interviewId;
+    private int examId;
     private int set;
 
     // constructors
@@ -17,20 +17,20 @@ public class Set extends Timestamped {
         // empty constructor
     }
 
-    public Set(int interviewId, int set) {
-        this.setInterviewId(interviewId);
+    public Set(int examId, int set) {
+        this.setExamId(examId);
         this.setSet(set);
     }
 
-    public Set(Interview interview, int set) {
-        this.setInterviewId(interview.getId());
+    public Set(Exam exam, int set) {
+        this.setExamId(exam.getId());
         this.setSet(set);
     }
 
     // getters
 
-    public int getInterviewId() {
-        return this.interviewId;
+    public int getExamId() {
+        return this.examId;
     }
 
     public int getSet() {
@@ -39,8 +39,8 @@ public class Set extends Timestamped {
 
     // setters
 
-    public Set setInterviewId(int id) {
-        this.interviewId = id;
+    public Set setExamId(int id) {
+        this.examId = id;
         return this;
     }
 
@@ -56,7 +56,7 @@ public class Set extends Timestamped {
         if (! (obj instanceof Set)) return false;
         Set s = (Set) obj;
         return this.id == s.getId() &&
-            this.interviewId == s.getInterviewId() &&
+            this.examId == s.getExamId() &&
             this.set == s.getSet();
     }
 
@@ -64,8 +64,8 @@ public class Set extends Timestamped {
 
     public Set save() {
         try (Connection con = DB.sql2o.open()) {
-            String sql = "INSERT INTO sets (interviewId, `set`)"
-                + " VALUES (:interviewId, :set)";
+            String sql = "INSERT INTO sets (examId, `set`)"
+                + " VALUES (:examId, :set)";
             this.id = con.createQuery(sql).bind(this).executeUpdate().getKey(int.class);
             return Set.findById(this.id);
         }
@@ -95,10 +95,10 @@ public class Set extends Timestamped {
 
     // relations lookup
 
-    public Interview getInterview() {
+    public Exam getExam() {
         try (Connection con = DB.sql2o.open()) {
-            String q = "SELECT * FROM interviews WHERE id=:interviewId";
-            return con.createQuery(q).bind(this).executeAndFetchFirst(Interview.class);
+            String q = "SELECT * FROM exams WHERE id=:examId";
+            return con.createQuery(q).bind(this).executeAndFetchFirst(Exam.class);
         }
     }
 

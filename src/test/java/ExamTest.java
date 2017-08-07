@@ -2,35 +2,35 @@ import org.junit.*;
 import static org.junit.Assert.*;
 
 
-public class InterviewTest {
+public class ExamTest {
 
     @Rule
     public DatabaseRule database = new DatabaseRule();
 
 
     @Test
-    public void get_all_interviews() {
+    public void get_all_Exams() {
         User u = new User("admin").save();
-        Interview i = new Interview(u, "Interview 1").save();
-        assertEquals(1, Interview.all().size());
-        assertTrue(Interview.all().contains(i));
+        Exam i = new Exam(u, "Exam 1").save();
+        assertEquals(1, Exam.all().size());
+        assertTrue(Exam.all().contains(i));
     }
 
     @Test
-    public void delete_interview_from_db() {
+    public void delete_Exam_from_db() {
         User u = new User("admin").save();
-        Interview c = new Interview(u, "test").save();
-        assertEquals(1, Interview.all().size());
+        Exam c = new Exam(u, "test").save();
+        assertEquals(1, Exam.all().size());
         c.delete();
-        assertEquals(0, Interview.all().size());
+        assertEquals(0, Exam.all().size());
     }
 
     @Test
-    public void find_interview_by_id() {
+    public void find_Exam_by_id() {
         User u = new User("admin").save();
-        Interview c = new Interview(u, "test").save();
+        Exam c = new Exam(u, "test").save();
         int id = c.getId();
-        assertEquals(c, Interview.findById(id));
+        assertEquals(c, Exam.findById(id));
     }
 
     // relations lookup
@@ -38,14 +38,14 @@ public class InterviewTest {
     @Test
     public void get_user() {
         User u = new User("test").save();
-        Interview i = new Interview(u, "test").save();
+        Exam i = new Exam(u, "test").save();
         assertEquals(u, i.getUser());
     }
 
     @Test
     public void get_sets() {
         User u = new User("test").save();
-        Interview i = new Interview(u, "test").save();
+        Exam i = new Exam(u, "test").save();
         Set[] sets = {
             new Set(i, 1).save(),
             new Set(i, 2).save(),

@@ -16,7 +16,7 @@ public class SetTest {
     @Test
     public void get_all_sets() {
         User u = new User("test").save();
-        Interview i = new Interview(u, "test").save();
+        Exam i = new Exam(u, "test").save();
         Set s = new Set(i, 1).save();
         assertEquals(1, Set.all().size());
         assertTrue(Set.all().contains(s));
@@ -25,7 +25,7 @@ public class SetTest {
     @Test
     public void delete_set_from_db() {
         User u = new User("test").save();
-        Interview i = new Interview(u, "test").save();
+        Exam i = new Exam(u, "test").save();
         Set s = new Set(i, 1).save();
         assertEquals(1, Set.all().size());
         s.delete();
@@ -35,7 +35,7 @@ public class SetTest {
     @Test
     public void find_set_by_id() {
         User u = new User("test").save();
-        Interview i = new Interview(u, "test").save();
+        Exam i = new Exam(u, "test").save();
         Set s = new Set(i, 1).save();
         int id = s.getId();
         assertEquals(s, Set.findById(id));
@@ -44,17 +44,17 @@ public class SetTest {
     // relations
 
     @Test
-    public void get_interview() {
+    public void get_exam() {
         User u = new User("test").save();
-        Interview i = new Interview(u, "test").save();
+        Exam i = new Exam(u, "test").save();
         Set s = new Set(i, 1).save();
-        assertEquals(i, s.getInterview());
+        assertEquals(i, s.getExam());
     }
 
     @Test
     public void getQuestions() {
         User u = new User("test").save();
-        Interview i = new Interview(u, "test").save();
+        Exam i = new Exam(u, "test").save();
         Set s = new Set(i, 1).save();
         Category c = new Category("test").save();
         Question q1 = new Question(u, c, "Question 1", 0).save();

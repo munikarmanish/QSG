@@ -198,10 +198,10 @@ public class User extends Timestamped {
         }
     }
 
-    public List<Interview> getInterviews() {
+    public List<Exam> getExams() {
         try (Connection con = DB.sql2o.open()) {
-            String sql = "SELECT * FROM interviews WHERE userId=:id";
-            return con.createQuery(sql).bind(this).executeAndFetch(Interview.class);
+            String sql = "SELECT * FROM exams WHERE userId=:id";
+            return con.createQuery(sql).bind(this).executeAndFetch(Exam.class);
         }
     }
 
