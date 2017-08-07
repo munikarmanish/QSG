@@ -5,7 +5,7 @@
       <div class="row">
         <div class="col-md-12">
           <div class="just-txt-div">
-            <form action="/interview_selector" method="post">
+            <form action="/questions/set" method="post">
          
               <div class="form-group">
                 <label for="title">Title</label>
@@ -25,14 +25,20 @@
               </div>
 
               <div class="form-group">
-                <label for="difficulty">Difficulty</label>
-                <input type="number" name="difficulty" id="difficulty" class="form-control"  placeholder="1/2/3" required>
+                <label for="difficulty">Difficulty</label><br/>
+                <input type="radio" name="difficulty" id="difficulty" value="0" >0(Easy)<br>
+                <input type="radio" name="difficulty" id="difficulty" value="1" >1(Medium)<br>
+                <input type="radio" name="difficulty" id="difficulty" value="2">2(Hard)<br>
               </div>
 
               <div class="form-group">
+               #set($index=0)
                 <label for="category">Category</label>
-                <input type="text" name="category" id="category" class="form-control"  placeholder="animals" required>
+                #foreach ($category in $categories)
+                <br/><input type="checkbox" name="category" value="$category.getId()">$category.getName()</input>
+                #end
               </div>
+
 
               <!-- action buttons -->
               <button type="submit" class="btn btn-primary btn-outline-success">Create</button>

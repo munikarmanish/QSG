@@ -53,8 +53,9 @@
   <p>No questions</p>
 #end
 
-<form action="set/save" method="post"> 
+<form action="/set_show" method="post">
  <input type="hidden" name="questionid[]" value="$qid">
  <input type="hidden" name="questionnum[]" value="$qnum">
+
  <button type="submit" class="btn btn-primary btn-outline-success">Save</button>                 
 </form>

@@ -155,7 +155,15 @@ public class Interview extends Timestamped {
             return con.createQuery(sql).executeAndFetch(Interview.class);
         }
     }
-
+    public static List<Interview> dated_all(String startdate, String enddate) {
+        try (Connection con = DB.sql2o.open()) {
+            String sql = "SELECT * FROM interviews WHERE time BETWEEN :startdate AND :enddate";//2019-07-09 01:54:00 //yyyy-mm-dd
+            return con.createQuery(sql)
+            .addParameter("startdate",startdate)
+            .addParameter("enddate",enddate)
+            .executeAndFetch(Interview.class);
+        }
+    }
     public static Interview findById(int id) {
         try (Connection con = DB.sql2o.open()) {
             String sql = "SELECT * FROM interviews WHERE id=:id";

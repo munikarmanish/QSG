@@ -127,48 +127,28 @@ public class App {
             model.put("prevPage", page-1);
             model.put("nextPage", page+1);
             return new ModelAndView(model, layout);
-        }, new VelocityTemplateEngine());
-
-        // List questions setwise
-        get("/questions_set", (request, response) -> {
-            Map<String,Object> model = new HashMap<String,Object>();
-            model.put("template", "templates/question_sets.vtl");
-            int page = 1;
-            if (request.queryParams("page") != null) {
-                page = Integer.parseInt(request.queryParams("page"));
-            }
-            int difficulty = Integer.parseInt(request.queryParams("difficulty"));
-            int duration = Integer.parseInt(request.queryParams("duration"));
-            List<Question> questions = Question.limitset(duration, difficulty);
-            model.put("questions", questions);
-            model.put("currentPage", page);
-            model.put("prevPage", page-1);
-            model.put("nextPage", page+1);
-            return new ModelAndView(model, layout);
-        }, new VelocityTemplateEngine());
-        
+        }, new VelocityTemplateEngine()); 
 
 
-        post("/save_set", (request, response) -> {
-        	String str = request.queryParams("questionid[]");
+        post("/questions/set/save", (request, response) -> {
+        	String str = request.queryParams("questionid[]"); //12
             int[] qids = Arrays.stream(str.substring(1, str.length()-1).split(",")).map(String::trim).mapToInt(Integer::parseInt).toArray();
         	String str1 = request.queryParams("questionnum[]");
             int[] qnums = Arrays.stream(str1.substring(1, str1.length()-1).split(",")).map(String::trim).mapToInt(Integer::parseInt).toArray();
-        	int len = qids.length;
-        	int newid= Set.getsetId();
-            newid=newid-2; 
+        	int len = qnums.length;
+        	int newid= Set.getsetId(); //6
+            newid=newid-2; //4
         	for (int y=0; y<3;y++) 
         	{
-            for(int z=0; z<len; z++) 
+            for(int z=0; z<len; z++) //0 TO 12 012--4--5--345--5--6--  
             {
             Set.saveSet(newid, qids[z], qnums[z], 1 ); //(setId, questionId, questionNumber, correctIndex)
             }
             ++newid;
             }
-            response.redirect("/interview_selector");
+            response.redirect("/interviews/add");
             return 0;
         });
-
 
         // Add question
         get("/questions/add", (request, response) -> {
@@ -197,41 +177,48 @@ public class App {
             response.redirect("/questions");
             return 0;
         });
-        
-        //Interview selector
-        get("/interview_selector", (request, response) -> {
-            Map<String,Object> model = new HashMap<String,Object>();
-            model.put("template", "templates/interview_selector.vtl");
-            return new ModelAndView(model, layout);
-        }, new VelocityTemplateEngine());
-       
-        
-        post("/interview_selector", (request, response) -> {       
+
+        post("/questions/set", (request, response) -> {       
             String title= request.queryParams("title");
-            // time stamp format is yyyy-mm-dd hh:mm:ss
-            // datetime-local is 2017-06-01T08:30
-            String dateString= request.queryParams("time");
+            String dateString= request.queryParams("time"); //datetime-local is 2017-06-01T08:30 
             String dateModified = dateString.replace( "T" , " " );
-            String fulldateString= dateModified +":00";
+            String fulldateString= dateModified +":00"; //time stamp format is yyyy-mm-dd hh:mm:ss
             Timestamp ts = Timestamp.valueOf(fulldateString);
             int difficulty = Integer.parseInt(request.queryParams("difficulty"));
+            String[] idStrArray = request.queryParamsValues("category");
             int duration = Integer.parseInt(request.queryParams("duration"));
-            String category = request.queryParams("category");
             Interview i = new Interview(0, title, ts, duration).save(); //userid is 0 for now
             for(int sn=1; sn<=3; sn++)
-        	{
-            int intervid= Interview.getinterviewId();
-        	Set s = new Set(intervid,sn).save(); //Set(int interviewId, int set)
-        	}
-        	int newid= Set.getsetId();
+            {
+                int intervid= Interview.getinterviewId();
+                Set s = new Set(intervid,sn).save(); //Set(int interviewId, int set)
+            }
+            int newid= Set.getsetId();
             if (i == null) {
                 response.redirect("/message?m=ERROR");
             }
-            String address="/questions_set?difficulty="+ difficulty +"&duration="+ duration+"&setId="+ newid;
-            response.redirect(address);
             Map<String,Object> model = new HashMap<String,Object>();
-            return new ModelAndView(model, layout_signinup);
+            model.put("template", "templates/question_sets.vtl");
+            int page = 1;
+            if (request.queryParams("page") != null) {
+                page = Integer.parseInt(request.queryParams("page"));
+            }
+            List<Question> questions = Question.limitset(duration, difficulty);
+            model.put("questions", questions);
+            model.put("currentPage", page);
+            model.put("prevPage", page-1);
+            model.put("nextPage", page+1);
+            return new ModelAndView(model, layout);
         }, new VelocityTemplateEngine());
+        
+        //Interview selector
+        get("/interviews/add", (request, response) -> {
+            Map<String,Object> model = new HashMap<String,Object>();
+            model.put("template", "templates/interview_selector.vtl");
+             model.put("categories", Category.all());
+            return new ModelAndView(model, layout);
+        }, new VelocityTemplateEngine());
+           
 
         //  List interview
         get("/interviews", (request, response) -> {
@@ -241,6 +228,15 @@ public class App {
             return new ModelAndView(model, layout);
         }, new VelocityTemplateEngine());
 
+        //  List interview
+        get("/interviews/datepicker", (request, response) -> {
+            String startdate= request.queryParams("starttime")+" 00:00:00";
+            String enddate= request.queryParams("endtime")+" 00:00:00";
+            Map<String,Object> model = new HashMap<String,Object>();Interview.all();
+            model.put("template", "templates/interview_list.vtl");
+            model.put("interviews", Interview.dated_all(startdate,enddate));
+            return new ModelAndView(model, layout);
+        }, new VelocityTemplateEngine());
 
         //delete interview
         post("/interviews/:iId/delete", (request, response) ->{
@@ -249,8 +245,6 @@ public class App {
             response.redirect("/interviews");
             return "Success";
         });    
-
-
 
       //  List category
         get("/categories", (request, response) -> {

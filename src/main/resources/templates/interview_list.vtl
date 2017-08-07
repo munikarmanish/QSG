@@ -16,11 +16,25 @@
     </div>
   </div><!--row-->
 #end
+<form action="/interviews" method="get" id="datepicker">
+<input type="submit" value="Show All" class="btn btn-primary"/>
+</form>
 <script type="text/javascript">
 window.onload = function() {
   document.getElementById('interviews').className = 'active';
 };
 </script>
+<br/><br/>
+<h2>Filter by dates </h2>
+<form action="/interviews/datepicker" method="get" id="datepicker">
+<h3> From </h3>
+<input type="date" name="starttime"/>
+<h3> To </h3>
+<input type="date" name="endtime"/>
+<input type="submit" class="btn btn-primary"/>
+</form>
+
+
 
           <br/><br><br><h3> Create new interview </h3>
             <form action="/interview_selector" method="get">
