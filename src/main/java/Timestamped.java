@@ -1,6 +1,17 @@
 import java.sql.Timestamp;
 
 
+/**
+ * This is a base class for database model which implements methods to get
+ * and set ID and created/updated timestamps.
+ *
+ * Timestamped instances are not directly saved in the database, but they are
+ * inherited by other derived classes which can be saved directly to the
+ * database.
+ *
+ * @author Manish Munikar
+ * @since 2017-08-12
+ */
 public class Timestamped {
 
     // variables

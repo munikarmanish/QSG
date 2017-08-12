@@ -144,12 +144,11 @@ public class User extends Timestamped {
     public boolean equals(Object obj) {
         if (! (obj instanceof User)) return false;
         User user = (User) obj;
-        if (!this.email.equals(user.getEmail())) return false;
-        if (!this.username.equals(user.getUsername())) return false;
-        if (!this.passwordHash.equals(user.getPasswordHash())) return false;
-        if (!this.name.equals(user.getName())) return false;
-        if (this.id != user.getId()) return false;
-        return true;
+        return this.email.equals(user.getEmail()) &&
+            this.username.equals(user.getUsername()) &&
+            this.passwordHash.equals(user.getPasswordHash()) &&
+            this.name.equals(user.getName()) &&
+            this.id.equals(user.getId());
     }
 
     // methods

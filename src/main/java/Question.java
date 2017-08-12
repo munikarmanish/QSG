@@ -4,6 +4,20 @@ import java.util.*;
 import org.sql2o.*;
 
 
+/**
+ * Represents an MCQ Question. Each question has 4 answers of which only one is
+ * correct. Also, each question falls under a category and a difficulty level.
+ * The difficulty levels are coded as follows:
+ *     0: Easy
+ *     1: Medium
+ *     2: Hard
+ *
+ * @author Manish Munikar
+ * @since 2017-08-12
+ *
+ * @see Answer
+ * @see Category
+ */
 public class Question extends Timestamped {
 
     // constants
@@ -25,7 +39,7 @@ public class Question extends Timestamped {
 
     public Question(User user, Category category, String text, Integer difficulty) {
         if (user == null) {
-            this.setUserId(0);
+            this.setUserId(null);
         } else {
             this.setUserId(user.getId());
         }
@@ -35,7 +49,7 @@ public class Question extends Timestamped {
     }
 
     public Question(Integer userId, Integer categoryId, String text, Integer difficulty) {
-        this.setUserId(userId);
+        this.setUserId(userId > 0? userId : null);
         this.setCategoryId(categoryId);
         this.setText(text);
         this.setDifficulty(difficulty);
@@ -75,6 +89,7 @@ public class Question extends Timestamped {
     }
 
     public Question setDifficulty(Integer difficulty) {
+        // check if difficulty value is legal
         if (difficulty < DIFFICULTY_EASY || difficulty > DIFFICULTY_HARD) {
             throw new IllegalArgumentException("Invalid difficulty value");
         }
@@ -84,101 +99,161 @@ public class Question extends Timestamped {
 
     // operators
 
+    /**
+     * Checks if this Question instance is equal to some other object.
+     *
+     * @param obj Any java object.
+     *
+     * @return True, if equal. False, otherwise.
+     */
     @Override
     public boolean equals(Object obj) {
+        // If obj is not an instance of Question class, directly return false.
         if (! (obj instanceof Question)) {
             return false;
         }
-        Question q = (Question) obj;
-        return this.id == q.getId() &&
-            this.userId == q.getUserId() &&
-            this.categoryId == q.getCategoryId() &&
-            this.text.equals(q.getText()) &&
-            this.difficulty == q.getDifficulty();
+        Question question = (Question) obj;
+        return this.id.equals(question.getId()) &&
+            this.userId.equals(question.getUserId()) &&
+            this.categoryId.equals(question.getCategoryId()) &&
+            this.text.equals(question.getText()) &&
+            this.difficulty.equals(question.getDifficulty());
     }
 
     // methods
 
+    /**
+     * Saves the Question instance to the database. Updates if already saved.
+     *
+     * @return Saved or updated instance.
+     */
     public Question save() {
-        try (Connection con = DB.sql2o.open()) {
-            Integer userId = (this.userId > 0)? this.userId : null;
-            String sql;
+        try (Connection con = DB.sql2o.open();) {
+            String query;
             if (this.id != null && this.id > 0) {
-                sql = "UPDATE questions SET userId=:userId, categoryId=:categoryId, text=:text, difficulty=:difficulty WHERE id=:id";
-                con.createQuery(sql)
-                        .addParameter("userId", userId)
-                        .addParameter("categoryId", this.categoryId)
-                        .addParameter("text", this.text)
-                        .addParameter("difficulty", this.difficulty)
-                        .addParameter("id", this.id)
-                        .executeUpdate();
+                query = "UPDATE questions SET "
+                    + "userId=:userId, categoryId=:categoryId, text=:text, "
+                    + "difficulty=:difficulty WHERE id=:id";
+                con.createQuery(query)
+                    .bind(this)
+                    .executeUpdate();
             } else {
-                sql = "INSERT INTO questions (userId, categoryId, text, difficulty)"
-                        + " VALUES (:userId, :categoryId, :text, :difficulty)";
-                this.id = con.createQuery(sql, true)
-                        .addParameter("userId", userId)
-                        .addParameter("categoryId", this.categoryId)
-                        .addParameter("text", this.text)
-                        .addParameter("difficulty", this.difficulty)
-                        .executeUpdate()
-                        .getKey(Integer.class);
+                query = "INSERT INTO questions"
+                    + " (userId, categoryId, text, difficulty)"
+                    + " VALUES (:userId, :categoryId, :text, :difficulty)";
+                this.id = con.createQuery(query, true)
+                            .bind(this)
+                            .executeUpdate()
+                            .getKey(Integer.class);
             }
             return Question.findById(this.id);
         }
     }
 
+    /**
+     * Delets the Question instance from the database.
+     */
     public void delete() {
-        try (Connection con = DB.sql2o.open()) {
-            String sql = "DELETE FROM questions WHERE id=:id";
-            con.createQuery(sql)
+        try (Connection con = DB.sql2o.open();) {
+            String query = "DELETE FROM questions WHERE id=:id";
+            con.createQuery(query)
                 .bind(this)
                 .executeUpdate();
-            this.id = 0;
+            this.setId(null);
         }
     }
 
     // relations lookup
 
+    /**
+     * Gets the user who created the question.
+     *
+     * @return User instance related to this Question instance.
+     */
     public User getUser() {
-        try (Connection con = DB.sql2o.open()) {
-            String sql = "SELECT * FROM users WHERE id=:userId";
-            return con.createQuery(sql).bind(this).executeAndFetchFirst(User.class);
+        try (Connection con = DB.sql2o.open();) {
+            String query = "SELECT * FROM users WHERE id=:userId";
+            return con.createQuery(query)
+                    .bind(this)
+                    .executeAndFetchFirst(User.class);
         }
     }
 
+    /**
+     * Gets the category in which this question belongs.
+     *
+     * @return Category instance associated with this Question instance.
+     */
     public Category getCategory() {
-        try (Connection con = DB.sql2o.open()) {
-            String sql = "SELECT * FROM categories WHERE id=:categoryId";
-            return con.createQuery(sql).bind(this).executeAndFetchFirst(Category.class);
+        try (Connection con = DB.sql2o.open();) {
+            String query = "SELECT * FROM categories WHERE id=:categoryId";
+            return con.createQuery(query)
+                    .bind(this)
+                    .executeAndFetchFirst(Category.class);
         }
     }
 
+    /**
+     * Gets the list of answers for this question.
+     *
+     * @return List of Answer instances associated with this Question instance.
+     */
     public List<Answer> getAnswers() {
-        try (Connection con = DB.sql2o.open()) {
-            String sql = "SELECT * FROM answers WHERE questionId=:id";
-            return con.createQuery(sql).bind(this).executeAndFetch(Answer.class);
+        try (Connection con = DB.sql2o.open();) {
+            String query = "SELECT * FROM answers WHERE questionId=:id";
+            return con.createQuery(query)
+                    .bind(this)
+                    .executeAndFetch(Answer.class);
         }
     }
 
+    /**
+     * Gets the correct answer of this question.
+     *
+     * @return Correct Answer instance of this Question instance.
+     */
     public Answer getCorrectAnswer() {
-        try (Connection con = DB.sql2o.open()) {
-            String q = "SELECT * FROM answers WHERE questionId=:id AND isCorrect=TRUE ORDER BY id DESC";
-            return con.createQuery(q).bind(this).executeAndFetchFirst(Answer.class);
+        try (Connection con = DB.sql2o.open();) {
+            String query = "SELECT * FROM answers"
+                + " WHERE questionId=:id AND isCorrect=TRUE"
+                + " ORDER BY id DESC";
+            return con.createQuery(query)
+                    .bind(this)
+                    .executeAndFetchFirst(Answer.class);
         }
     }
 
+    /**
+     * Gets the list of incorrect answers for this question.
+     *
+     * @return List of incorrect Answer instances of this Question instance.
+     */
     public List<Answer> getIncorrectAnswers() {
-        try (Connection con = DB.sql2o.open()) {
-            String q = "SELECT * FROM answers WHERE questionId=:id AND isCorrect=FALSE";
-            return con.createQuery(q).bind(this).executeAndFetch(Answer.class);
+        try (Connection con = DB.sql2o.open();) {
+            String query = "SELECT * FROM answers"
+                + " WHERE questionId=:id AND isCorrect=FALSE";
+            return con.createQuery(query)
+                    .bind(this)
+                    .executeAndFetch(Answer.class);
         }
     }
 
+    /**
+     * Gets the list of answers of this question, sorted in a particular order
+     * in the given question set. The correct index of every question in every
+     * set is stored in the database. This method uses that stored correct_index
+     * to sort the answers.
+     *
+     * @param set Question set where to look for order of answers.
+     *
+     * @return List of ordered Answer instances of this Question instance.
+     */
     public List<Answer> getOrderedAnswers(Set set) {
         Integer correctIndex = 0;
-        try (Connection con = DB.sql2o.open()) {
-            String sql = "SELECT correctIndex from sets_questions WHERE setId=:setId AND questionId=:questionId";
-            correctIndex = con.createQuery(sql)
+        try (Connection con = DB.sql2o.open();) {
+            String query = "SELECT correctIndex from sets_questions"
+                + " WHERE setId=:setId AND questionId=:questionId";
+            correctIndex = con.createQuery(query)
                     .addParameter("setId", set.getId())
                     .addParameter("questionId", this.id)
                     .executeAndFetchFirst(Integer.class);
@@ -195,43 +270,79 @@ public class Question extends Timestamped {
         return Arrays.asList(orderedAnswers);
     }
 
+    /**
+     * Adds an answer for this question.
+     *
+     * @param text Answer content.
+     * @param isCorrect Is this the correct answer?
+     *
+     * @return this Question instance.
+     */
     public Question addAnswer(String text, boolean isCorrect) {
-        Answer a = new Answer(this.id, text, isCorrect).save();
+        Answer answer = new Answer(this.id, text, isCorrect).save();
         return this;
     }
 
+    /**
+     * Get the sets which contain this question.
+     *
+     * @return List of Set instances that contain this Question instance.
+     */
     public List<Set> getSets() {
-        try (Connection con = DB.sql2o.open()) {
-            String q = "SELECT sets.id, sets.examId, sets.set,"
+        try (Connection con = DB.sql2o.open();) {
+            String query = "SELECT sets.id, sets.examId, sets.set,"
                 + " sets.createdAt, sets.updatedAt"
-                + " FROM sets INNER JOIN sets_questions ON sets.id = sets_questions.setId"
+                + " FROM sets INNER JOIN sets_questions"
+                + " ON sets.id = sets_questions.setId"
                 + " WHERE sets_questions.questionId = :id";
-            return con.createQuery(q).bind(this).executeAndFetch(Set.class);
+            return con.createQuery(query).bind(this).executeAndFetch(Set.class);
         }
     }
 
     // static methods
 
+    /**
+     * Gets all the questions in the database.
+     *
+     * @return List of all Question instances in the database.
+     */
     public static List<Question> all() {
-        try (Connection con = DB.sql2o.open()) {
-            String sql = "SELECT * FROM questions ORDER BY id DESC";
-            return con.createQuery(sql).executeAndFetch(Question.class);
+        try (Connection con = DB.sql2o.open();) {
+            String query = "SELECT * FROM questions ORDER BY id DESC";
+            return con.createQuery(query).executeAndFetch(Question.class);
         }
     }
 
+    /**
+     * Finds question by ID.
+     *
+     * @param id Question ID to look for.
+     *
+     * @return Question instance with given ID. Null, if not found.
+     */
     public static Question findById(Integer id) {
-        try (Connection con = DB.sql2o.open()) {
-            String sql = "SELECT * FROM questions WHERE id=:id";
-            return con.createQuery(sql)
+        try (Connection con = DB.sql2o.open();) {
+            String query = "SELECT * FROM questions WHERE id=:id";
+            return con.createQuery(query)
                 .addParameter("id", id)
                 .executeAndFetchFirst(Question.class);
         }
     }
 
-    public static List<Question> limit(Integer start_index, Integer size) {
+    /**
+     * Gets a slice of list of all questions in the database. This is useful for
+     * pagination purposes. Returns questions in the range
+     * [startIndex, startIndex + size).
+     *
+     * @param startIndex Starting index
+     * @param size (Max) number of questions to return
+     *
+     * @return Sliced List of Question instances in the database.
+     */
+    public static List<Question> limit(Integer startIndex, Integer size) {
         try (Connection con = DB.sql2o.open()) {
             return con.createQuery("SELECT * FROM questions ORDER BY id DESC LIMIT :start, :size")
-                .addParameter("start", start_index)
+                .addParameter("start", startIndex)
                 .addParameter("size", size)
                 .executeAndFetch(Question.class);
         }

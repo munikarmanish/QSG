@@ -54,10 +54,10 @@ public class Set extends Timestamped {
     @Override
     public boolean equals(Object obj) {
         if (! (obj instanceof Set)) return false;
-        Set s = (Set) obj;
-        return this.id == s.getId() &&
-            this.examId == s.getExamId() &&
-            this.set == s.getSet();
+        Set set = (Set) obj;
+        return this.id.equals(set.getId()) &&
+            this.examId.equals(set.getExamId()) &&
+            this.set.equals(set.getSet());
     }
 
     // database methods
