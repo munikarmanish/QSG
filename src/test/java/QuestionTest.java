@@ -48,7 +48,7 @@ public class QuestionTest {
         User u = new User("test").save();
         Category c = new Category("test").save();
         Question q = new Question(u, c, "Math", 0).save();
-        int id = q.getId();
+        Integer id = q.getId();
         assertEquals(q, Question.findById(id));
     }
 

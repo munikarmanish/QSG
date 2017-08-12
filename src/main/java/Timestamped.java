@@ -5,17 +5,17 @@ public class Timestamped {
 
     // variables
 
-    protected int id;
+    protected Integer id;
     protected Timestamp createdAt;
     protected Timestamp updatedAt;
 
     // getters and setters
 
-    public int getId() {
+    public Integer getId() {
         return this.id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

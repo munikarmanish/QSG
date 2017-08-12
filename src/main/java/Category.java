@@ -52,7 +52,7 @@ public class Category extends Timestamped {
             this.id = con.createQuery(sql, true)
                 .bind(this)
                 .executeUpdate()
-                .getKey(int.class);
+                .getKey(Integer.class);
             return Category.findById(this.id);
         }
     }
@@ -83,7 +83,7 @@ public class Category extends Timestamped {
         }
     }
 
-    public static Category findById(int id) {
+    public static Category findById(Integer id) {
         try (Connection con = DB.sql2o.open()) {
             String sql = "SELECT * FROM categories WHERE id=:id";
             return con.createQuery(sql)

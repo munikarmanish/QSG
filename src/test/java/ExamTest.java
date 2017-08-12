@@ -29,7 +29,7 @@ public class ExamTest {
     public void find_Exam_by_id() {
         User u = new User("admin").save();
         Exam c = new Exam(u, "test").save();
-        int id = c.getId();
+        Integer id = c.getId();
         assertEquals(c, Exam.findById(id));
     }
 

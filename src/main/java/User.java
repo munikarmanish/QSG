@@ -8,10 +8,10 @@ public class User extends Timestamped {
 
     // static
 
-    public static final int ROLE_EXAMINER = 0;
-    public static final int ROLE_OPERATOR = 1;
-    public static final int ROLE_ADMIN = 2;
-    public static final int DEFAULT_ROLE = ROLE_EXAMINER;
+    public static final Integer ROLE_EXAMINER = 0;
+    public static final Integer ROLE_OPERATOR = 1;
+    public static final Integer ROLE_ADMIN = 2;
+    public static final Integer DEFAULT_ROLE = ROLE_EXAMINER;
 
     // variables
 
@@ -19,7 +19,7 @@ public class User extends Timestamped {
     private String username;
     private String passwordHash;
     private String name;
-    private int role;
+    private Integer role;
 
     // constructors
 
@@ -35,7 +35,7 @@ public class User extends Timestamped {
         this.setRole(DEFAULT_ROLE);
     }
 
-    public User(String email, String username, String password, String name, int role) {
+    public User(String email, String username, String password, String name, Integer role) {
         this.setEmail(email);
         this.setUsername(username);
         this.setPassword(password);
@@ -43,7 +43,7 @@ public class User extends Timestamped {
         this.setRole(role);
     }
 
-    public User(String name, int role) {
+    public User(String name, Integer role) {
         this.setEmail(name + "@example.com");
         this.setUsername(name);
         this.setPassword(name);
@@ -129,11 +129,11 @@ public class User extends Timestamped {
         return (this.role == ROLE_EXAMINER || this.role == ROLE_ADMIN);
     }
 
-    public int getRole() {
+    public Integer getRole() {
         return this.role;
     }
 
-    public User setRole(int role) {
+    public User setRole(Integer role) {
         this.role = role;
         return this;
     }
@@ -162,7 +162,7 @@ public class User extends Timestamped {
     public User save() {
         try (Connection con = DB.sql2o.open()) {
             String sql;
-            if (this.id > 0) {
+            if (this.id != null && this.id > 0) {
                 sql = "UPDATE users SET email=:email, passwordHash=:passwordHash, "
                       + "username=:username, name=:name, role=:role "
                       + "WHERE id=:id";
@@ -173,7 +173,7 @@ public class User extends Timestamped {
                 this.id = con.createQuery(sql, true)
                             .bind(this)
                             .executeUpdate()
-                            .getKey(int.class);
+                            .getKey(Integer.class);
             }
             return User.findById(this.id);
         }
@@ -214,7 +214,7 @@ public class User extends Timestamped {
         }
     }
 
-    public static User findById(int id) {
+    public static User findById(Integer id) {
         try (Connection con = DB.sql2o.open()) {
             String sql = "SELECT * FROM users WHERE id=:id";
             return con.createQuery(sql)

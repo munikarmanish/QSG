@@ -35,7 +35,7 @@ public class AnswerTest {
         Category c = new Category("test").save();
         Question q = new Question(u, c, "What?", 0).save();
         Answer a = new Answer(q, "That", true).save();
-        int id = a.getId();
+        Integer id = a.getId();
         assertEquals(a, Answer.findById(id));
     }
 

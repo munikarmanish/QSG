@@ -37,7 +37,7 @@ public class SetTest {
         User u = new User("test").save();
         Exam i = new Exam(u, "test").save();
         Set s = new Set(i, 1).save();
-        int id = s.getId();
+        Integer id = s.getId();
         assertEquals(s, Set.findById(id));
     }
 

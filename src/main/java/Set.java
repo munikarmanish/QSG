@@ -8,8 +8,8 @@ public class Set extends Timestamped {
 
     // variables
 
-    private int examId;
-    private int set;
+    private Integer examId;
+    private Integer set;
 
     // constructors
 
@@ -17,34 +17,34 @@ public class Set extends Timestamped {
         // empty constructor
     }
 
-    public Set(int examId, int set) {
+    public Set(Integer examId, Integer set) {
         this.setExamId(examId);
         this.setSet(set);
     }
 
-    public Set(Exam exam, int set) {
+    public Set(Exam exam, Integer set) {
         this.setExamId(exam.getId());
         this.setSet(set);
     }
 
     // getters
 
-    public int getExamId() {
+    public Integer getExamId() {
         return this.examId;
     }
 
-    public int getSet() {
+    public Integer getSet() {
         return this.set;
     }
 
     // setters
 
-    public Set setExamId(int id) {
+    public Set setExamId(Integer id) {
         this.examId = id;
         return this;
     }
 
-    public Set setSet(int set) {
+    public Set setSet(Integer set) {
         this.set = set;
         return this;
     }
@@ -66,7 +66,7 @@ public class Set extends Timestamped {
         try (Connection con = DB.sql2o.open()) {
             String sql = "INSERT INTO sets (examId, `set`)"
                 + " VALUES (:examId, :set)";
-            this.id = con.createQuery(sql).bind(this).executeUpdate().getKey(int.class);
+            this.id = con.createQuery(sql).bind(this).executeUpdate().getKey(Integer.class);
             return Set.findById(this.id);
         }
     }
@@ -79,7 +79,7 @@ public class Set extends Timestamped {
         }
     }
 
-    public Set addQuestion(Question q, int questionNumber, int correctIndex) {
+    public Set addQuestion(Question q, Integer questionNumber, Integer correctIndex) {
         try (Connection con = DB.sql2o.open()) {
             String sql = "INSERT INTO sets_questions (setId, questionId, questionNumber, correctIndex)"
                 + "VALUES (:setId, :questionId, :questionNumber, :correctIndex)";
@@ -131,7 +131,7 @@ public class Set extends Timestamped {
         }
     }
 
-    public static Set findById(int id) {
+    public static Set findById(Integer id) {
         try (Connection con = DB.sql2o.open()) {
             String sql = "SELECT * FROM sets WHERE id=:id";
             return con.createQuery(sql)

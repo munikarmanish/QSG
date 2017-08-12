@@ -17,7 +17,7 @@ public class Exam extends Timestamped {
 
     // static variables
 
-    public static final int DEFAULT_DURATION = 30;
+    public static final Integer DEFAULT_DURATION = 30;
 
     // constructors
 
@@ -119,7 +119,7 @@ public class Exam extends Timestamped {
     public Exam save() {
         String sql;
         try (Connection con = DB.sql2o.open()) {
-            if (this.id > 0) {
+            if (this.id != null && this.id > 0) {
                 sql = "UPDATE exams SET userId=:userId, title=:title, time=:time, duration=:duration, difficulty=:difficulty WHERE id=:id";
                 con.createQuery(sql).bind(this).executeUpdate();
             } else {
@@ -168,7 +168,7 @@ public class Exam extends Timestamped {
         }
     }
 
-    public static Exam findById(int id) {
+    public static Exam findById(Integer id) {
         try (Connection con = DB.sql2o.open()) {
             String sql = "SELECT * FROM exams WHERE id=:id";
             return con.createQuery(sql)

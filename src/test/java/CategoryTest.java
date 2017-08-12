@@ -28,7 +28,7 @@ public class CategoryTest {
     @Test
     public void find_category_by_id() {
         Category c = new Category("test").save();
-        int id = c.getId();
+        Integer id = c.getId();
         assertEquals(c, Category.findById(id));
     }
 

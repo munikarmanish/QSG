@@ -35,7 +35,7 @@ public class UserTest {
     @Test
     public void find_user_by_id() {
         User u = new User("test").save();
-        int id = u.getId();
+        Integer id = u.getId();
         assertEquals(u, User.findById(id));
     }
 
@@ -71,7 +71,7 @@ public class UserTest {
     @Test
     public void update_user_using_save() {
         User u = new User("test").save();
-        int id = u.getId();
+        Integer id = u.getId();
         u.setName("Name");
         u.save();
         assertEquals("Name", User.findById(id).getName());

@@ -6,13 +6,13 @@ public class Answer extends Timestamped {
 
     // variables
 
-    private int questionId;
+    private Integer questionId;
     private String text;
     private boolean isCorrect;
 
     // constructors
 
-    public Answer(int questionId, String text, boolean isCorrect) {
+    public Answer(Integer questionId, String text, boolean isCorrect) {
         this.setQuestionId(questionId);
         this.setText(text);
         this.setIsCorrect(isCorrect);
@@ -26,11 +26,11 @@ public class Answer extends Timestamped {
 
     // getters & setters
 
-    public int getQuestionId() {
+    public Integer getQuestionId() {
         return this.questionId;
     }
 
-    public Answer setQuestionId(int id) {
+    public Answer setQuestionId(Integer id) {
         this.questionId = id;
         return this;
     }
@@ -73,7 +73,7 @@ public class Answer extends Timestamped {
         try (Connection con = DB.sql2o.open()) {
             String sql = "INSERT INTO answers (questionId, text, isCorrect)"
                 + "VALUES (:questionId, :text, :isCorrect)";
-            this.id = con.createQuery(sql).bind(this).executeUpdate().getKey(int.class);
+            this.id = con.createQuery(sql).bind(this).executeUpdate().getKey(Integer.class);
             return Answer.findById(this.id);
         }
     }
@@ -104,7 +104,7 @@ public class Answer extends Timestamped {
         }
     }
 
-    public static Answer findById(int id) {
+    public static Answer findById(Integer id) {
         try (Connection con = DB.sql2o.open()) {
             String sql = "SELECT * FROM answers WHERE id=:id";
             return con.createQuery(sql)

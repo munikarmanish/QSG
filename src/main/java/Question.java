@@ -8,22 +8,22 @@ public class Question extends Timestamped {
 
     // constants
 
-    public static final int DIFFICULTY_EASY = 0;
-    public static final int DIFFICULTY_MEDIUM = 1;
-    public static final int DIFFICULTY_HARD = 2;
+    public static final Integer DIFFICULTY_EASY = 0;
+    public static final Integer DIFFICULTY_MEDIUM = 1;
+    public static final Integer DIFFICULTY_HARD = 2;
 
     public static final Integer DEFAULT_DIFFICULTY = 1;
 
     // variables
 
-    private int userId;
-    private int categoryId;
+    private Integer userId;
+    private Integer categoryId;
     private String text;
-    private int difficulty;
+    private Integer difficulty;
 
     // constructors
 
-    public Question(User user, Category category, String text, int difficulty) {
+    public Question(User user, Category category, String text, Integer difficulty) {
         if (user == null) {
             this.setUserId(0);
         } else {
@@ -34,7 +34,7 @@ public class Question extends Timestamped {
         this.setDifficulty(difficulty);
     }
 
-    public Question(int userId, int categoryId, String text, int difficulty) {
+    public Question(Integer userId, Integer categoryId, String text, Integer difficulty) {
         this.setUserId(userId);
         this.setCategoryId(categoryId);
         this.setText(text);
@@ -43,20 +43,20 @@ public class Question extends Timestamped {
 
     // getters and setters
 
-    public int getUserId() {
+    public Integer getUserId() {
         return this.userId;
     }
 
-    public Question setUserId(int id) {
+    public Question setUserId(Integer id) {
         this.userId = id;
         return this;
     }
 
-    public int getCategoryId() {
+    public Integer getCategoryId() {
         return this.categoryId;
     }
 
-    public Question setCategoryId(int id) {
+    public Question setCategoryId(Integer id) {
         this.categoryId = id;
         return this;
     }
@@ -70,11 +70,11 @@ public class Question extends Timestamped {
         return this;
     }
 
-    public int getDifficulty() {
+    public Integer getDifficulty() {
         return this.difficulty;
     }
 
-    public Question setDifficulty(int difficulty) {
+    public Question setDifficulty(Integer difficulty) {
         if (difficulty < DIFFICULTY_EASY || difficulty > DIFFICULTY_HARD) {
             throw new IllegalArgumentException("Invalid difficulty value");
         }
@@ -103,7 +103,7 @@ public class Question extends Timestamped {
         try (Connection con = DB.sql2o.open()) {
             Integer userId = (this.userId > 0)? this.userId : null;
             String sql;
-            if (this.id > 0) {
+            if (this.id != null && this.id > 0) {
                 sql = "UPDATE questions SET userId=:userId, categoryId=:categoryId, text=:text, difficulty=:difficulty WHERE id=:id";
                 con.createQuery(sql)
                         .addParameter("userId", userId)
@@ -121,7 +121,7 @@ public class Question extends Timestamped {
                         .addParameter("text", this.text)
                         .addParameter("difficulty", this.difficulty)
                         .executeUpdate()
-                        .getKey(int.class);
+                        .getKey(Integer.class);
             }
             return Question.findById(this.id);
         }
@@ -219,7 +219,7 @@ public class Question extends Timestamped {
         }
     }
 
-    public static Question findById(int id) {
+    public static Question findById(Integer id) {
         try (Connection con = DB.sql2o.open()) {
             String sql = "SELECT * FROM questions WHERE id=:id";
             return con.createQuery(sql)
@@ -228,7 +228,7 @@ public class Question extends Timestamped {
         }
     }
 
-    public static List<Question> limit(int start_index, int size) {
+    public static List<Question> limit(Integer start_index, Integer size) {
         try (Connection con = DB.sql2o.open()) {
             return con.createQuery("SELECT * FROM questions ORDER BY id DESC LIMIT :start, :size")
                 .addParameter("start", start_index)

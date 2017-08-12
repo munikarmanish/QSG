@@ -10,7 +10,7 @@ import org.apache.commons.lang.StringUtils;
 
 public class App {
 
-    public static final int QUESTIONS_PER_PAGE = 10;
+    public static final Integer QUESTIONS_PER_PAGE = 10;
 
     public static void main(String[] args)
     {
@@ -113,11 +113,11 @@ public class App {
             Map<String,Object> model = new HashMap<String,Object>();
             model.put("template", "templates/question_list.vtl");
 
-            int page = 1;
+            Integer page = 1;
             if (request.queryParams("page") != null) {
                 page = Integer.parseInt(request.queryParams("page"));
             }
-            int start = (page - 1) * QUESTIONS_PER_PAGE;
+            Integer start = (page - 1) * QUESTIONS_PER_PAGE;
             List<Question> questions = Question.limit(start, QUESTIONS_PER_PAGE);
 
             model.put("questions", questions);
@@ -137,13 +137,13 @@ public class App {
 
         // Submit question
         post("/questions", (request, response) -> {
-            int categoryId = Integer.parseInt(request.queryParams("category"));
+            Integer categoryId = Integer.parseInt(request.queryParams("category"));
             String question = request.queryParams("question");
             String answer1 = request.queryParams("answer1");
             String answer2 = request.queryParams("answer2");
             String answer3 = request.queryParams("answer3");
             String answer4 = request.queryParams("answer4");
-            int difficulty = Integer.parseInt(request.queryParams("difficulty"));
+            Integer difficulty = Integer.parseInt(request.queryParams("difficulty"));
 
             // userId is 0 = NULL for now
             Question q = new Question(0, categoryId, question, difficulty).save();
@@ -159,7 +159,7 @@ public class App {
 
         // delete question
         post("/questions/:qid/delete", (request, response) -> {
-            int id = Integer.parseInt(request.params(":qid"));
+            Integer id = Integer.parseInt(request.params(":qid"));
             Question q = Question.findById(id);
             q.delete();
             response.redirect("/questions");
@@ -182,13 +182,13 @@ public class App {
         post("/questions/:qid/edit", (request, response) -> {
             Question q = Question.findById(Integer.parseInt(request.params(":qid")));
 
-            int categoryId = Integer.parseInt(request.queryParams("category"));
+            Integer categoryId = Integer.parseInt(request.queryParams("category"));
             String text = request.queryParams("question");
             String answer1 = request.queryParams("answer1");
             String answer2 = request.queryParams("answer2");
             String answer3 = request.queryParams("answer3");
             String answer4 = request.queryParams("answer4");
-            int difficulty = Integer.parseInt(request.queryParams("difficulty"));
+            Integer difficulty = Integer.parseInt(request.queryParams("difficulty"));
 
             String sql;
             try (Connection con = DB.sql2o.open();) {
@@ -259,7 +259,7 @@ public class App {
                 return new ModelAndView(model, layout);
             }
 
-            int role = Integer.parseInt(request.queryParams("role"));
+            Integer role = Integer.parseInt(request.queryParams("role"));
             String name = request.queryParams("name");
             String username = request.queryParams("username");
             String email = request.queryParams("email");
@@ -376,9 +376,9 @@ public class App {
             List<Question> set2_questions = new ArrayList<Question>();
             List<Question> set3_questions = new ArrayList<Question>();
 
-            for (int i = 0; i < questions_selected.size(); i++) {
+            for (Integer i = 0; i < questions_selected.size(); i++) {
                 Question q = questions_selected.get(i);
-                int test = i / count_selected;
+                Integer test = i / count_selected;
                 if (test == 0) {
                     set1_questions.add(q);
                 } else if (test == 1) {
@@ -388,9 +388,9 @@ public class App {
                 }
             }
 
-            for (int i = 0; i < questions_other_1.size(); i++) {
+            for (Integer i = 0; i < questions_other_1.size(); i++) {
                 Question q = questions_other_1.get(i);
-                int test = i / count_other_1;
+                Integer test = i / count_other_1;
                 if (test == 0) {
                     set1_questions.add(q);
                 } else if (test == 1) {
@@ -400,9 +400,9 @@ public class App {
                 }
             }
 
-            for (int i = 0; i < questions_other_2.size(); i++) {
+            for (Integer i = 0; i < questions_other_2.size(); i++) {
                 Question q = questions_other_2.get(i);
-                int test = i / count_other_2;
+                Integer test = i / count_other_2;
                 if (test == 0) {
                     set1_questions.add(q);
                 } else if (test == 1) {
@@ -421,7 +421,7 @@ public class App {
             Collections.shuffle(set3_questions);
 
             Random random = new Random();
-            for (int i = 1; i <= count_per_set; i++) {
+            for (Integer i = 1; i <= count_per_set; i++) {
                 set1.addQuestion(set1_questions.get(i-1), i, random.nextInt(4));
                 set2.addQuestion(set2_questions.get(i-1), i, random.nextInt(4));
                 set3.addQuestion(set3_questions.get(i-1), i, random.nextInt(4));
