@@ -10,7 +10,7 @@ import org.apache.commons.lang.StringUtils;
 
 /**
  * The controller class for the web application. It handles all the routes.
- *
+ * @author Manish Munikar, Sushil Shakya
  * @since 2017-08-12
  */
 public class App {
@@ -243,6 +243,8 @@ public class App {
         });
 
         // List of categories.
+        // Displays the list of catgories currently available in the database.
+        // Added by Sushil Shakya
         get("/categories", (request, response) -> {
             Map<String,Object> model = new HashMap<String,Object>();Category.all();
             model.put("template", "templates/category_list.vtl");
@@ -261,12 +263,15 @@ public class App {
         });
 
         // Category delete handler.
+        // Can be used to delete the unwanted category from the database.
         post("/categories/:cId/delete", (request, response) ->{
             Category category = Category.findById(Integer.parseInt(request.params(":cId")));
             category.delete();
             response.redirect("/categories");
             return "Success";
         });
+        // Part of Sushil Shakya ends here
+
 
         // User add form. This should be only available for admin users.
         get("/users/add", (request, response) -> {
