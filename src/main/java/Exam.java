@@ -197,7 +197,7 @@ public class Exam extends Timestamped {
     public List<Set> getSets() {
         try (Connection con = DB.sql2o.open();) {
             return con.createQuery("SELECT * FROM sets WHERE examId=:id"
-                                   + " ORDER BY `set` ASC")
+                                   + " ORDER BY setNumber ASC")
                 .bind(this)
                 .executeAndFetch(Set.class);
         }

@@ -290,7 +290,7 @@ public class Question extends Timestamped {
      */
     public List<Set> getSets() {
         try (Connection con = DB.sql2o.open();) {
-            String query = "SELECT sets.id, sets.examId, sets.set,"
+            String query = "SELECT sets.id, sets.examId, sets.setNumber,"
                 + " sets.createdAt, sets.updatedAt"
                 + " FROM sets INNER JOIN sets_questions"
                 + " ON sets.id = sets_questions.setId"

@@ -7,8 +7,6 @@ import org.sql2o.*;
 /**
  * Represents a category of question.
  *
- * Question and Category have many-to-many relationship.
- *
  * @author Manish Munikar
  * @since 2017-08-12
  */

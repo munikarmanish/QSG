@@ -104,14 +104,14 @@ CREATE TABLE `sets` (
     -- fields
     `id` INTEGER  AUTO_INCREMENT  NOT NULL,
     `examId` INTEGER,
-    `set` SMALLINT  NOT NULL  DEFAULT 1,
+    `setNumber` SMALLINT  NOT NULL  DEFAULT 1,
     -- timestamps
     `createdAt` timestamp  NOT NULL  DEFAULT current_timestamp,
     `updatedAt` timestamp  NOT NULL  DEFAULT current_timestamp  ON UPDATE current_timestamp,
     -- constraints
     PRIMARY KEY (`id`),
     FOREIGN KEY (`examId`) REFERENCES `exams`(`id`)  ON DELETE SET NULL,
-    UNIQUE (`examId`, `set`)
+    UNIQUE (`examId`, `setNumber`)
 );
 
 -- Set Question many-many relation
