@@ -1,7 +1,9 @@
 import org.junit.*;
 import static org.junit.Assert.*;
 
-
+/**
+ * Unit tests for the Answer class.
+ */
 public class AnswerTest {
 
     @Rule

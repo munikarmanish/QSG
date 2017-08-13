@@ -2,6 +2,9 @@ import org.junit.*;
 import static org.junit.Assert.*;
 
 
+/**
+ * Unit tests for the Exam class.
+ */
 public class ExamTest {
 
     @Rule

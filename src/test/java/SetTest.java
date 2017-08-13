@@ -4,6 +4,9 @@ import static org.junit.Assert.*;
 import org.sql2o.*;
 
 
+/**
+ * Unit tests for the Set class.
+ */
 public class SetTest {
 
     @Rule
