@@ -4,6 +4,18 @@ import java.util.List;
 import org.sql2o.*;
 
 
+/**
+ * Represents a user in the system.
+ *
+ * Users can be of one of 3 roles:
+ *
+ *      0: Examiner (can generate question sets)
+ *      1: Operator (can also create new questions)
+ *      2: Admin (can also add new users)
+ *
+ * @author Manish Munikar
+ * @since 2017-08-13
+ */
 public class User extends Timestamped {
 
     // static
@@ -17,7 +29,7 @@ public class User extends Timestamped {
 
     private String email;
     private String username;
-    private String passwordHash;
+    private String passwordHash;    // SHA-256 digest of password
     private String name;
     private Integer role;
 
@@ -65,6 +77,13 @@ public class User extends Timestamped {
         return this.email;
     }
 
+    /**
+     * Sets the email. Validates email before setting.
+     *
+     * @param email The email address to set.
+     *
+     * @return Updated User instance.
+     */
     public User setEmail(String email) {
         EmailValidator validator = EmailValidator.getInstance();
         if (validator.isValid(email)) {
@@ -93,9 +112,11 @@ public class User extends Timestamped {
     }
 
     public User setPasswordHash(String passwordHash) {
+        // Validate hash characters.
         if (!passwordHash.matches("^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$")) {
             throw new IllegalArgumentException("Invalid password hash, regex fail");
         }
+        // Validate hash length.
         if (passwordHash.length() != 44) {
             throw new IllegalArgumentException("Invalid password hash, not 44 length");
         }
@@ -140,8 +161,16 @@ public class User extends Timestamped {
 
     // operators
 
+    /**
+     * Equality comparator.
+     *
+     * @param obj Any java object.
+     *
+     * @return True, if equal. False, if not.
+     */
     @Override
     public boolean equals(Object obj) {
+        // If obj is not a User instance, directly return false.
         if (! (obj instanceof User)) return false;
         User user = (User) obj;
         return this.email.equals(user.getEmail()) &&
@@ -153,23 +182,35 @@ public class User extends Timestamped {
 
     // methods
 
+    /**
+     * Checks if the given password is correct the user.
+     *
+     * @param password Password to check.
+     *
+     * @return True, if pass. False, if fail.
+     */
     public boolean checkPassword(String password) {
         String newHash = Utils.bytesToBase64(Utils.sha256(password));
         return newHash.equals(this.passwordHash);
     }
 
+    /**
+     * Saves the User instance in the database. Updates if already saved.
+     *
+     * @return Saved (or updated) instance.
+     */
     public User save() {
-        try (Connection con = DB.sql2o.open()) {
-            String sql;
+        try (Connection con = DB.sql2o.open();) {
+            String query;
             if (this.id != null && this.id > 0) {
-                sql = "UPDATE users SET email=:email, passwordHash=:passwordHash, "
+                query = "UPDATE users SET email=:email, passwordHash=:passwordHash, "
                       + "username=:username, name=:name, role=:role "
                       + "WHERE id=:id";
-                con.createQuery(sql).bind(this).executeUpdate();
+                con.createQuery(query).bind(this).executeUpdate();
             } else {
-                sql = "INSERT INTO users (email, username, passwordHash, name, role)"
+                query = "INSERT INTO users (email, username, passwordHash, name, role)"
                         + "VALUES (:email, :username, :passwordHash, :name, :role)";
-                this.id = con.createQuery(sql, true)
+                this.id = con.createQuery(query, true)
                             .bind(this)
                             .executeUpdate()
                             .getKey(Integer.class);
@@ -178,11 +219,14 @@ public class User extends Timestamped {
         }
     }
 
+    /**
+     * Deletes this User instance from the database.
+     */
     public void delete() {
-        try (Connection con = DB.sql2o.open()) {
-            String sql = "DELETE FROM users WHERE id=:id";
-            con.createQuery(sql)
-                .addParameter("id", this.id)
+        try (Connection con = DB.sql2o.open();) {
+            String query = "DELETE FROM users WHERE id=:id";
+            con.createQuery(query)
+                .bind(this)
                 .executeUpdate();
             this.id = 0;
         }
@@ -190,38 +234,70 @@ public class User extends Timestamped {
 
     // relations lookup
 
+    /**
+     * Gets the questions added by this user.
+     *
+     * @return List of Question instances added by this User.
+     */
     public List<Question> getQuestions() {
-        try (Connection con = DB.sql2o.open()) {
-            String sql = "SELECT * FROM questions WHERE userId=:id";
-            return con.createQuery(sql).bind(this).executeAndFetch(Question.class);
+        try (Connection con = DB.sql2o.open();) {
+            String query = "SELECT * FROM questions WHERE userId=:id";
+            return con.createQuery(query)
+                    .bind(this)
+                    .executeAndFetch(Question.class);
         }
     }
 
+    /**
+     * Gets the exams created by this user.
+     *
+     * @return List of Exam instances created by this User.
+     */
     public List<Exam> getExams() {
-        try (Connection con = DB.sql2o.open()) {
-            String sql = "SELECT * FROM exams WHERE userId=:id";
-            return con.createQuery(sql).bind(this).executeAndFetch(Exam.class);
+        try (Connection con = DB.sql2o.open();) {
+            String query = "SELECT * FROM exams WHERE userId=:id";
+            return con.createQuery(query).bind(this).executeAndFetch(Exam.class);
         }
     }
 
     // static methods
 
+    /**
+     * Gets all the users in the database.
+     *
+     * @return List of all the User instances in the database.
+     */
     public static List<User> all() {
-        try (Connection con = DB.sql2o.open()) {
-            String sql = "SELECT * FROM users";
-            return con.createQuery(sql).executeAndFetch(User.class);
+        try (Connection con = DB.sql2o.open();) {
+            String query = "SELECT * FROM users";
+            return con.createQuery(query).executeAndFetch(User.class);
         }
     }
 
+    /**
+     * Finds user by ID.
+     *
+     * @param id User ID to look for.
+     *
+     * @return User instance with given ID. Null, if not found.
+     */
     public static User findById(Integer id) {
-        try (Connection con = DB.sql2o.open()) {
-            String sql = "SELECT * FROM users WHERE id=:id";
-            return con.createQuery(sql)
+        try (Connection con = DB.sql2o.open();) {
+            String query = "SELECT * FROM users WHERE id=:id";
+            return con.createQuery(query)
                 .addParameter("id", id)
                 .executeAndFetchFirst(User.class);
         }
     }
 
+    /**
+     * Finds user with given username. This works because username has a UNIQUE
+     * constraint in the database.
+     *
+     * @param username Username to look for.
+     *
+     * @return User instance with given username. Null, if not found.
+     */
     public static User findByUsername(String username) {
         try (Connection con = DB.sql2o.open()) {
             return con.createQuery("SELECT * FROM users WHERE username=:username")
