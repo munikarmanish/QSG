@@ -10,7 +10,7 @@ import org.apache.commons.lang.StringUtils;
 
 /**
  * The controller class for the web application. It handles all the routes.
- * @author Manish Munikar, Sushil Shakya
+ * @author Manish Munikar, Sushil Shakya, Aakash Shrestha, Rojina Deuja
  * @since 2017-08-12
  */
 public class App {
@@ -92,6 +92,8 @@ public class App {
         });
 
         // The login form.
+        // It is used to handle user login.
+        // Added by Rojina Deuja
         get("/login", (request, response) -> {
             Map<String,Object> model = new HashMap<String,Object>();
             model.put("template", "templates/login.vtl");
@@ -99,6 +101,7 @@ public class App {
         }, new VelocityTemplateEngine());
 
         // Login form handler.
+        // Verify the username and password and only access for authenticated
         post("/login", (request, response) -> {
             String username = request.queryParams("username");
             String password = request.queryParams("password");
@@ -122,6 +125,7 @@ public class App {
         // The logout handler.
         // NOTE: Logout should be handled by a POST method. We've used GET for
         // ease of implementation in the development phase.
+
         get("/logout", (request, response) -> {
             if (request.session().attribute("userId") == null) {
                 response.redirect("/message?m=NOT+LOGGED+IN");
@@ -131,10 +135,12 @@ public class App {
             }
             return 0;
         });
+        // End of Rojina part
 
         // Paginated list of all questions in the database. This is useful for
         // deleting or updating existing questions, or adding a new one in the
         // database.
+        // Added by Manish Munikar
         get("/questions", (request, response) -> {
             Map<String,Object> model = new HashMap<String,Object>();
             model.put("template", "templates/question_list.vtl");
@@ -241,6 +247,7 @@ public class App {
             response.redirect("/questions/" + q.getId() + "/edit");
             return 0;
         });
+        // End of Manish Munikar part
 
         // List of categories.
         // Displays the list of catgories currently available in the database.
@@ -291,6 +298,7 @@ public class App {
         }, new VelocityTemplateEngine());
 
         // User add form handler. This is also available for admin users.
+        // Added by Aakash Shrestha
         post("/users", (request, response) -> {
             Map<String,Object> model = new HashMap<String,Object>();
 
@@ -548,5 +556,6 @@ public class App {
             model.put("exam", exam);
             return new ModelAndView(model, layout);
         }, new VelocityTemplateEngine());
+        //End of Aakash Part
     }
 }
