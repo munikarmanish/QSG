@@ -1,7 +1,7 @@
 Question Set Generator
 ======================
 
-It generates question sets for interviewers with specified difficulty.
+**The Question Set Generator (QSG) generates multiple-choice-questions (MCQ) sets for a specified difficulty level. The QSG randomly draws from multiple category questions. The percentage of Easy/Medium/Hard level questions can be set by the interviewer. The answers are shuffled between the multiple choices for each set. Additionally, a printable version of the question set can be also generated.**
 
 Requirements
 ------------
